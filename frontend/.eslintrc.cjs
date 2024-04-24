@@ -14,5 +14,9 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'prettier/prettier': [
+      'error',
+      { singleQuote: true, parser: 'typescript', endOfLine: 'auto' },
+    ],
   },
-}
+};
