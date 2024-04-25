@@ -1,9 +1,7 @@
 import './App.css';
-import { BASE_URL, HOST_API } from './shared/constants/app';
+import { HOST_API, BASE_URL } from '@constants';
 
 function App() {
-  console.log('BASE_URL', import.meta.env);
-  console.log('HOST_API', HOST_API);
   return (
     <div>
       <h1>Host API: {HOST_API}</h1>
