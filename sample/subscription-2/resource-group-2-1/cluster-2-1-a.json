@@ -1,0 +1,57 @@
+[
+  {
+    "name": "cluster-2-1-a-node-pool-1",
+    "provisioningState": "Failed",
+    "powerState": "VM running",
+    "nodeCount": 3,
+    "mode": "User",
+    "nodeImageVersion": "5.2.8",
+    "k8sVersion": "1.6",
+    "nodeSize": "Standard_D2s_v3",
+    "os": "Linux"
+  },
+  {
+    "name": "cluster-2-1-a-node-pool-2",
+    "provisioningState": "Succeeded",
+    "powerState": "VM running",
+    "nodeCount": 3,
+    "mode": "User",
+    "nodeImageVersion": "5.2.8",
+    "k8sVersion": "1.6",
+    "nodeSize": "Standard_D2s_v3",
+    "os": "Linux"
+  },
+  {
+    "name": "cluster-2-1-a-node-pool-3",
+    "provisioningState": "Succeeded",
+    "powerState": "VM running",
+    "nodeCount": 3,
+    "mode": "User",
+    "nodeImageVersion": "5.2.8",
+    "k8sVersion": "1.6",
+    "nodeSize": "Standard_D2s_v3",
+    "os": "Linux"
+  },
+  {
+    "name": "cluster-2-1-a-node-pool-4",
+    "provisioningState": "Succeeded",
+    "powerState": "VM running",
+    "nodeCount": 3,
+    "mode": "User",
+    "nodeImageVersion": "5.2.8",
+    "k8sVersion": "1.6",
+    "nodeSize": "Standard_D2s_v3",
+    "os": "Linux"
+  },
+  {
+    "name": "cluster-2-1-a-node-pool-5",
+    "provisioningState": "Succeeded",
+    "powerState": "VM running",
+    "nodeCount": 3,
+    "mode": "User",
+    "nodeImageVersion": "5.2.8",
+    "k8sVersion": "1.6",
+    "nodeSize": "Standard_D2s_v3",
+    "os": "Linux"
+  }
+]
