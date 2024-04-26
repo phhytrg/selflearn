@@ -1,25 +1,36 @@
-package com.selflearn.backend.auth.jwt;
+package com.selflearn.backend.security.jwt;
 
-import com.selflearn.backend.auth.services.UserDetailsImpl;
+import com.selflearn.backend.security.UserDetailsImpl;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtHandler;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtils {
     @Value("${selflearn.app.jwtSecret}")
     private String jwtSecret;
@@ -27,39 +38,43 @@ public class JwtUtils {
     @Value("${selflearn.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
-    private final SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-
     public String generateJwtToken(Authentication authentication) {
 
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+//        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+        UserDetailsImpl userPrincipal = new UserDetailsImpl(
+                UUID.randomUUID(),
+                "truongphan@gmail.com",
+                "123456",
+                List.of()
+        );
 
         return Jwts.builder()
-                .subject()
-
-        return Jwts.builder()
-                .setSubject((userPrincipal.getUsername()))
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .subject(String.valueOf((userPrincipal.getId())))
+                .claims(getClaims(userPrincipal))
+                .issuedAt(new Date())
+                .expiration(new Date((new Date().getTime()) + jwtExpirationMs))
+                .signWith(getSecretKey())
                 .compact();
     }
 
-    private Key getKey() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+    private Map<String, Object> getClaims(UserDetails userPrincipal){
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", userPrincipal.getUsername());
+        claims.put("roles", userPrincipal.getAuthorities());
+        return claims;
     }
 
-    public String getPayloadFromToken(String token) {
-        JwtParser parser = Jwts.parser().build();
-        return parser.parse(token).getPayload().toString();
+    private SecretKey getSecretKey() {
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public UUID getSubjectFromToken(String token) {
+        JwtParser parser = Jwts.parser().verifyWith(getSecretKey()).build();
+        return UUID.fromString(((Claims) parser.parse(token).getPayload()).getSubject());
     }
 
     public boolean validateJwtToken(String authToken) {
-        try {
-            JwtParser parser = Jwts.parser().verifyWith().build();
-            return true;
-        } catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException e) {
-        }
-
-        return false;
+        JwtParser parser = Jwts.parser().verifyWith(getSecretKey()).build();
+        return parser.isSigned(authToken);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.backend.user.models;
+package com.selflearn.backend.user.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

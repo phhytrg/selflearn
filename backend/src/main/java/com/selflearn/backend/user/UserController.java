@@ -1,4 +1,4 @@
-package com.example.backend.user;
+package com.selflearn.backend.user;
 
 public class UserController {
 }
