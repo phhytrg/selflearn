@@ -1,12 +1,13 @@
-import './App.css'
+import './App.css';
+import { HOST_API, BASE_URL } from '@constants';
 
 function App() {
-
   return (
-    <>
-      <h1>Hello World</h1>
-    </>
-  )
+    <div>
+      <h1>Host API: {HOST_API}</h1>
+      <h1>Base URL: {BASE_URL}</h1>
+    </div>
+  );
 }
 
-export default App
+export default App;
