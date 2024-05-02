@@ -40,13 +40,7 @@ public class JwtUtils {
 
     public String generateJwtToken(Authentication authentication) {
 
-//        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        UserDetailsImpl userPrincipal = new UserDetailsImpl(
-                UUID.randomUUID(),
-                "truongphan@gmail.com",
-                "123456",
-                List.of()
-        );
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
                 .subject(String.valueOf((userPrincipal.getId())))
