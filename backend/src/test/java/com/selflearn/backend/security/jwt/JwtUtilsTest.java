@@ -62,4 +62,12 @@ public class JwtUtilsTest {
         assertNotNull(id);
     }
 
+    @Test
+    void testGetEmailFromToken() {
+        Authentication authentication = new UsernamePasswordAuthenticationToken("truongphan", "123456");
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxNmIwN2EzOS1mZjlmLTQ1NWUtODQ0NS0wMjc0NzZlMjMwNTAiLCJyb2xlcyI6W3siYXV0aG9yaXR5IjoiUkVBREVSIn1dLCJlbWFpbCI6ImFzZGFAZ21haWwuY29tIiwiaWF0IjoxNzE0NjI0ODA3LCJleHAiOjE3MTQ3MTEyMDd9.fSqx2H7nKng7XkO9rqxGI06i55aVIUT7-l-BMZ9PbHQ";
+        String email = jwtUtils.getEmailFromToken(token);
+        assertNotNull(email);
+    }
+
 }

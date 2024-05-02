@@ -8,7 +8,6 @@ import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -40,7 +39,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    private Map<String, Object> getClaims(UserDetails userPrincipal){
+    private Map<String, Object> getClaims(UserDetailsImpl userPrincipal){
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", userPrincipal.getUsername());
         claims.put("roles", userPrincipal.getAuthorities());
@@ -54,6 +53,12 @@ public class JwtUtils {
     public UUID getSubjectFromToken(String token) {
         JwtParser parser = Jwts.parser().verifyWith(getSecretKey()).build();
         return UUID.fromString(((Claims) parser.parse(token).getPayload()).getSubject());
+    }
+
+    public String getEmailFromToken(String token) {
+        JwtParser parser = Jwts.parser().verifyWith(getSecretKey()).build();
+        Map<String, ?> claims = parser.parseSignedClaims(token).getPayload();
+        return (String) claims.get("email");
     }
 
     public boolean validateJwtToken(String authToken) {

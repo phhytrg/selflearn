@@ -1,8 +1,5 @@
 package com.selflearn.backend.security.jwt;
 
-import com.selflearn.backend.security.UserDetailsImpl;
-import com.selflearn.backend.user.UserService;
-import com.selflearn.backend.user.models.User;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,11 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -43,9 +39,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseJwt(request);
             if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-                UUID sub = jwtUtils.getSubjectFromToken(jwt);
+                String email = jwtUtils.getEmailFromToken(jwt);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(sub.toString());
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
