@@ -1,6 +1,6 @@
 package com.selflearn.backend.security.dtos;
 
-import com.selflearn.backend.security.validators.constraints.PasswordsEqualConstraint;
+import com.selflearn.backend.shared.validators.constraints.PasswordsEqualConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;

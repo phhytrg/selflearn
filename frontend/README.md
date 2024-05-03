@@ -1,30 +1,28 @@
-# React + TypeScript + Vite
+1. Simple login page: User role: Admin, Reader (implement refresh token flow)
+2. Home page:
+Project structure
+a. Display the project structure from github to site
+b. Display the raw content of each file when clicking on it
+Sample data
+a. Can filter the data in sample folder by subscription, resource group, cluster (for reader, based on github data; for admin, have a toggle to switch from github data to db and vice versa)
+b. Display the data as table
+3. Admin page:
+Sync data
+a. Button to sync data from github to db
+b. Button to sync data from db to github
+Modify data in db
+a. Create/Edit: Input name of subscription (can add new), name of resource group (can add new), name of cluster (can add new) and the file of data to import (support json and csv)
+b. Delete items: If input only subscription, delete all related to that subscription. If input subscription and resource group, delete all related to that resource group. If input subscription and resource group and cluster, delete all related to the cluster
+4. Cron job to sync data from db to github at a specific time of day
+5. Webhook to modify data in db when there are changes to sample folder on github
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+New small requirements can be added along the way (that is what clients do every day tbh), so keep your code as flexible and clean as possible
 
-Currently, two official plugins are available:
+Keywords:
+Github API, workflow yaml
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-};
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Notes:
+make PR, review, merge
+workflow to deploy site
+daily report (did, doing, will do)
+manage tasks on github project (like jira later)

@@ -4,6 +4,7 @@ import com.selflearn.backend.user.models.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -18,5 +19,9 @@ public class UserService {
 
     public void saveUser(User user) {
         userRepository.save(user);
+    }
+
+    public List<User> fetchAllUsers() {
+        return userRepository.findAll();
     }
 }

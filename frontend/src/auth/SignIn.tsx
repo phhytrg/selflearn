@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useAuth } from './hooks/useAuth';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Input } from 'antd';
+import { useAuth } from './hooks/useAuth';
 
 export const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -42,8 +42,13 @@ export const LoginPage = () => {
       <Button type="primary" onClick={handleLogin}>
         Log In
       </Button>
-      <Button type="default">
-        <Link to="/signup">Sign Up</Link>
+      <Button
+        type="default"
+        onClick={() => {
+          navigate('/signup', { replace: true });
+        }}
+      >
+        Sign Up
       </Button>
     </div>
   );

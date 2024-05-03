@@ -1,8 +1,8 @@
-import axios from 'axios';
+import axiosInstance from './axios-config';
 
 export const authApi = {
   login: async (email: string, password: string) => {
-    return await axios.post('http://localhost:8080/auth/login', {
+    return await axiosInstance.post('/auth/login', {
       email,
       password,
     });
@@ -12,7 +12,7 @@ export const authApi = {
     password: string,
     confirmPassword: string,
   ) => {
-    return await axios.post('http://localhost:8080/auth/register', {
+    return await axiosInstance.post('/auth/signup', {
       email,
       password,
       confirmPassword,

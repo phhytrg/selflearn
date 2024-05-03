@@ -1,6 +1,6 @@
-package com.selflearn.backend.security.validators.constraints;
+package com.selflearn.backend.shared.validators.constraints;
 
-import com.selflearn.backend.security.validators.PasswordsEqualConstraintValidator;
+import com.selflearn.backend.shared.validators.PasswordsEqualConstraintValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
