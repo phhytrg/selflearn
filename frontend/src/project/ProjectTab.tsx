@@ -4,16 +4,10 @@ import {
   GITHUB_REPO,
   GITHUB_DIR_SAMPLE_SHA,
 } from '@/shared/constants/github';
-import { ReposContent } from '@/shared/interfaces/repos-content';
 import { TreeNode } from '@/shared/interfaces/tree';
 import { buildTreeFromArray } from '@/shared/utils/tree';
-import {
-  FileExcelFilled,
-  FileFilled,
-  FileOutlined,
-  FolderFilled,
-} from '@ant-design/icons';
-import { Button, Layout } from 'antd';
+import { FileOutlined, FolderFilled } from '@ant-design/icons';
+import { Button, Layout, Skeleton } from 'antd';
 import { Content } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import { useState, useEffect } from 'react';
@@ -21,7 +15,7 @@ import { useQuery } from 'react-query';
 
 export const ProjectTab = () => {
   const [tree, setTree] = useState<TreeNode[]>([]);
-  const [content, setContent] = useState<string>('');
+  const [content, setContent] = useState<string | null>('');
 
   const { isPending, error, data } = useQuery({
     queryKey: 'project',
@@ -53,6 +47,7 @@ export const ProjectTab = () => {
             ) => {
               e.preventDefault();
               if (node.type === 'blob') {
+                setContent(null);
                 const data: any = (
                   await octokit.rest.repos.getContent({
                     owner: GITHUB_OWNER,
@@ -89,7 +84,7 @@ export const ProjectTab = () => {
         className="bg-[#f0f0f0] min-h-[600px] p-2"
         style={{ borderTopRightRadius: '8px' }}
       >
-        <pre>{content}</pre>
+        <pre>{content ?? <Skeleton />}</pre>
       </Content>
     </Layout>
   );
