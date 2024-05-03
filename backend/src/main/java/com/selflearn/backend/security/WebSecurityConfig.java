@@ -3,6 +3,7 @@ package com.selflearn.backend.security;
 import com.selflearn.backend.security.jwt.AuthEntryPointJwt;
 import com.selflearn.backend.security.jwt.AuthTokenFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,10 @@ public class WebSecurityConfig {
     private final UserDetailsService userDetailsService;
     private final AuthEntryPointJwt unauthorizedHandler;
     private final AuthTokenFilter authTokenFilter;
+    @Value("${apiPrefix}")
+    private String apiPrefix;
+    @Value("${apiVersion}")
+    private String apiVersion;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -43,7 +48,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public DaoAuthenticationProvider authenticationProvider () {
+    public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
@@ -71,7 +76,7 @@ public class WebSecurityConfig {
                 })
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(apiPrefix + "/" + apiVersion + "/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
