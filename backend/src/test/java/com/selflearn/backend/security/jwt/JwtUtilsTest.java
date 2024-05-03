@@ -37,7 +37,7 @@ public class JwtUtilsTest {
     }
 
     @Test
-    public void tesGenerateToken() {
+    public void testGenerateToken() {
 
         Authentication authentication = new UsernamePasswordAuthenticationToken("truongphan", "123456");
 
