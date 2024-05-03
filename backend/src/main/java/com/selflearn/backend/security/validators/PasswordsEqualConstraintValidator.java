@@ -14,6 +14,6 @@ public class PasswordsEqualConstraintValidator implements ConstraintValidator<Pa
     @Override
     public boolean isValid(Object candidate, ConstraintValidatorContext constraintValidatorContext) {
         SignupDto signupDto = (SignupDto) candidate;
-        return signupDto.getPassword().equals(signupDto.getConfirmPassword());
+        return signupDto.password().equals(signupDto.confirmPassword());
     }
 }
