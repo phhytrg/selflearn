@@ -8,4 +8,5 @@ public interface AuthService {
     JwtResponse validateUser(LoginDto loginDto);
     void registerUser(SignupDto signupDto);
     JwtResponse validateRefreshToken(String refreshToken);
+    void logout(String refreshToken);
 }

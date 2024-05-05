@@ -75,6 +75,11 @@ public class AuthServiceImpl implements AuthService {
         return new JwtResponse(generateAccessToken(authentication), null);
     }
 
+    @Override
+    public void logout(String refreshToken) {
+        refreshTokenRepository.deleteByToken(refreshToken);
+    }
+
     private String generateAccessToken(Authentication authentication) {
         return jwtUtils.generateJwtToken(authentication);
     }

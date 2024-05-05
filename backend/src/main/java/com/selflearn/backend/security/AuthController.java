@@ -33,4 +33,9 @@ public class AuthController {
     public JwtResponse refresh(@RequestBody RefreshTokenDto refreshTokenDto) {
         return authService.validateRefreshToken(refreshTokenDto.refreshToken());
     }
+
+    @PostMapping("/logout")
+    public void logout(@RequestBody RefreshTokenDto refreshTokenDto) {
+        authService.logout(refreshTokenDto.refreshToken());
+    }
 }
