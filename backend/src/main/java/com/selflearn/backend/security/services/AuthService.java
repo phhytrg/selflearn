@@ -7,4 +7,5 @@ import com.selflearn.backend.security.dtos.SignupDto;
 public interface AuthService {
     JwtResponse validateUser(LoginDto loginDto);
     void registerUser(SignupDto signupDto);
+    JwtResponse validateRefreshToken(String refreshToken);
 }

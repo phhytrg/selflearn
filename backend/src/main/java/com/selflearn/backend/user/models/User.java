@@ -18,6 +18,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import java.util.Set;
 import java.util.UUID;
@@ -45,7 +47,8 @@ public class User {
     @NotNull
     private String password;
 
-    @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
+    // Lazy fetch here
+    @ElementCollection(targetClass = UserRole.class)
     @Enumerated(EnumType.STRING)
     @Column(name = "roles", nullable = false)
     private Set<UserRole> roles;

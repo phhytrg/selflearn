@@ -1,4 +1,4 @@
 package com.selflearn.backend.security.dtos;
 
-public record JwtResponse(String accessToken) {
+public record JwtResponse(String accessToken, String refreshToken) {
 }

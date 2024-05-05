@@ -2,6 +2,7 @@ package com.selflearn.backend.security;
 
 import com.selflearn.backend.security.dtos.JwtResponse;
 import com.selflearn.backend.security.dtos.LoginDto;
+import com.selflearn.backend.security.dtos.RefreshTokenDto;
 import com.selflearn.backend.security.dtos.SignupDto;
 import com.selflearn.backend.security.services.AuthService;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
+
     @PostMapping("/login")
     public JwtResponse login(@Valid @RequestBody LoginDto loginDto) {
         return authService.validateUser(loginDto);
@@ -25,5 +27,10 @@ public class AuthController {
     @PostMapping("/signup")
     public void signup(@Valid @RequestBody SignupDto signupDto) {
         authService.registerUser(signupDto);
+    }
+
+    @PostMapping("/refresh")
+    public JwtResponse refresh(@RequestBody RefreshTokenDto refreshTokenDto) {
+        return authService.validateRefreshToken(refreshTokenDto.refreshToken());
     }
 }

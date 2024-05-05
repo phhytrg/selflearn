@@ -1,8 +1,8 @@
-package com.selflearn.backend.security.services;
+package com.selflearn.backend.security.services.impl;
 
 import com.selflearn.backend.security.UserDetailsImpl;
-import com.selflearn.backend.user.UserRepository;
 import com.selflearn.backend.user.models.User;
+import com.selflearn.backend.user.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,13 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with email: " + email));
-
+        User user = userService.fetchUserByEmail(email);
         return UserDetailsImpl.build(user);
     }
 }
