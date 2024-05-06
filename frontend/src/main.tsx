@@ -5,7 +5,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { SignUpPage } from './auth/SignUp';
 import { LoginPage } from './auth/SignIn';
 import { ProtectedRoute } from './auth/ProtectedRoute';
-import { AuthProvider } from './auth/providers/auth-provider';
+import { AuthProvider } from './auth/providers/AuthProvider';
 import { HomePage } from './home/Home';
 import { QueryClient, QueryClientProvider } from 'react-query';
 

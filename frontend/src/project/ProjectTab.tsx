@@ -1,34 +1,19 @@
-import { octokit } from '@/shared/apis/octokit';
-import {
-  GITHUB_OWNER,
-  GITHUB_REPO,
-  GITHUB_DIR_SAMPLE_SHA,
-} from '@/shared/constants/github';
-import { TreeNode } from '@/shared/interfaces/tree';
 import { buildTreeFromArray } from '@/shared/utils/tree';
 import { FileOutlined, FolderFilled } from '@ant-design/icons';
 import { Button, Layout, Skeleton } from 'antd';
-import { Content } from 'antd/es/layout/layout';
 import Sider from 'antd/es/layout/Sider';
 import { useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { gitExchangeApi } from '@/shared/apis/git-exchange-api';
+import { FileContent } from './interfaces/FileContent';
+import { Content } from 'antd/es/layout/layout';
+import { useGetTree } from './queries/useTree';
+import { TreeNode } from './interfaces/Tree';
 
 export const ProjectTab = () => {
   const [tree, setTree] = useState<TreeNode[]>([]);
   const [content, setContent] = useState<string | null>('');
 
-  const { isPending, error, data } = useQuery({
-    queryKey: 'project',
-    queryFn: async () => {
-      const response = await octokit.rest.git.getTree({
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
-        tree_sha: GITHUB_DIR_SAMPLE_SHA,
-        recursive: '0',
-      });
-      return response.data;
-    },
-  });
+  const { data } = useGetTree();
 
   useEffect(() => {
     if (data) {
@@ -48,12 +33,8 @@ export const ProjectTab = () => {
               e.preventDefault();
               if (node.type === 'blob') {
                 setContent(null);
-                const data: any = (
-                  await octokit.rest.repos.getContent({
-                    owner: GITHUB_OWNER,
-                    repo: GITHUB_REPO,
-                    path: `sample/${node.path}`,
-                  })
+                const data: FileContent = (
+                  await gitExchangeApi.getContent(`sample/${node.path}`)
                 ).data;
 
                 setContent(

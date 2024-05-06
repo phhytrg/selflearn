@@ -32,15 +32,21 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
     password: string;
   }) => {
     const res: JwtResponse = (await authApi.login(username, password)).data;
-    const JwtPayload: JwtPayload = JSON.parse(
+    console.log(res);
+    const jwtPayload: JwtPayload = JSON.parse(
       Buffer.from(res.accessToken.split('.')[1], 'base64').toString(),
     );
-    setUser(JwtPayload);
+    setUser(jwtPayload);
+    localStorage.setItem('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+  
     return Promise.resolve();
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
   };
 
   const value = useMemo(

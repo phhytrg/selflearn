@@ -1,17 +1,22 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button, Input } from 'antd';
 import { useAuth } from './hooks/useAuth';
 
 export const LoginPage = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuth();
   const navigate = useNavigate();
+  const { login, user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  },[user, navigate]);
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    console.log(username, password);
     await login({
       username,
       password,

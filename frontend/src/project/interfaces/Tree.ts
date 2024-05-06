@@ -6,3 +6,10 @@ export interface TreeNode {
   url: string;
   children: TreeNode[];
 }
+
+export interface Tree {
+  sha: string;
+  url: string;
+  tree: TreeNode[];
+  truncated: boolean;
+}
