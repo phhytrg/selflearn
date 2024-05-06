@@ -11,7 +11,6 @@ export const LoginPage = () => {
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    console.log(username, password);
     await login({
       username,
       password,
