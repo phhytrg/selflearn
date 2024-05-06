@@ -49,8 +49,8 @@ public class AuthServiceImpl implements AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String accessToken = generateAccessToken(authentication);
         User user = userService.getReferenceById(((UserDetailsImpl) authentication.getPrincipal()).getId());
-        String refreshToken = generateRefreshToken(user);
-        return new JwtResponseDto(accessToken, refreshToken);
+        UUID refreshToken = generateRefreshToken(user);
+        return new JwtResponseDto(accessToken, refreshToken.toString());
     }
 
     @Override
@@ -65,8 +65,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JwtResponseDto validateRefreshToken(String refreshToken) {
-        RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
+    public JwtResponseDto validateRefreshToken(UUID refreshToken) {
+        RefreshToken token = refreshTokenRepository.findById(refreshToken)
                 .orElseThrow(() -> new RuntimeException("Invalid refresh Token"));
         if (token.getExpiredAt() < new Date().getTime()) {
             refreshTokenRepository.delete(token);
@@ -80,8 +80,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout(String refreshToken) {
-        refreshTokenRepository.deleteByToken(refreshToken);
+    public void logout(UUID refreshToken) {
+        refreshTokenRepository.deleteById(refreshToken);
     }
 
     @Override
@@ -95,13 +95,12 @@ public class AuthServiceImpl implements AuthService {
         return jwtUtils.generateJwtToken(authentication);
     }
 
-    private String generateRefreshToken(User user) {
+    private UUID generateRefreshToken(User user) {
         RefreshToken refreshToken = RefreshToken.builder()
-                .token(UUID.randomUUID().toString())
                 .user(user)
                 .expiredAt(new Date().getTime() + refreshTokenExpirationMs)
                 .build();
         refreshTokenRepository.save(refreshToken);
-        return refreshToken.getToken();
+        return refreshToken.getId();
     }
 }

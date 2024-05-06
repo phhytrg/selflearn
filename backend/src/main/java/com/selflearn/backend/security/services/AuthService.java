@@ -4,10 +4,12 @@ import com.selflearn.backend.security.dtos.JwtResponseDto;
 import com.selflearn.backend.security.dtos.LoginRequestDto;
 import com.selflearn.backend.security.dtos.SignupRequestDto;
 
+import java.util.UUID;
+
 public interface AuthService {
     JwtResponseDto validateUser(LoginRequestDto loginDto);
     void registerUser(SignupRequestDto signupDto);
-    JwtResponseDto validateRefreshToken(String refreshToken);
-    void logout(String refreshToken);
+    JwtResponseDto validateRefreshToken(UUID refreshToken);
+    void logout(UUID refreshToken);
     void removeExpiredToken();
 }
