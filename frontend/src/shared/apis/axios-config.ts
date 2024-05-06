@@ -22,23 +22,26 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
+      const originalRequest = error.config;
       const refreshToken = localStorage.getItem('refreshToken');
       if (!refreshToken) {
         return Promise.reject(error);
       }
       return axios
         .post(`${HOST_API}/api/v1/auth/refresh`, {
-          refresh: refreshToken,
+          refreshToken: refreshToken,
         })
         .then((response) => {
-          localStorage.setItem('accessToken', response.data.access);
+          localStorage.setItem('accessToken', response.data.accessToken);
           error.config.headers['Authorization'] =
-            `Bearer ${response.data.access}`;
-          return axios(error.response.config);
+            `Bearer ${response.data.accessToken}`;
+          return axiosInstance(originalRequest);
         })
-        .catch(() => {
+        .catch((e) => {
+          console.log(e);
           localStorage.removeItem('accessToken');
           localStorage.removeItem('refreshToken');
+          localStorage.removeItem('user');
         });
     }
     return Promise.reject(error);
