@@ -2,13 +2,12 @@ package com.selflearn.backend.security.services.impl;
 
 import com.selflearn.backend.security.RefreshTokenRepository;
 import com.selflearn.backend.security.UserDetailsImpl;
-import com.selflearn.backend.security.dtos.JwtResponse;
-import com.selflearn.backend.security.dtos.LoginDto;
-import com.selflearn.backend.security.dtos.SignupDto;
+import com.selflearn.backend.security.dtos.JwtResponseDto;
+import com.selflearn.backend.security.dtos.LoginRequestDto;
+import com.selflearn.backend.security.dtos.SignupRequestDto;
 import com.selflearn.backend.security.jwt.JwtUtils;
 import com.selflearn.backend.security.models.RefreshToken;
 import com.selflearn.backend.security.services.AuthService;
-import com.selflearn.backend.user.UserRepository;
 import com.selflearn.backend.user.models.User;
 import com.selflearn.backend.user.models.UserRole;
 import com.selflearn.backend.user.services.UserService;
@@ -39,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
-    public JwtResponse validateUser(LoginDto loginDto) {
+    public JwtResponseDto validateUser(LoginRequestDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.password())
         );
@@ -47,11 +46,11 @@ public class AuthServiceImpl implements AuthService {
         String accessToken = generateAccessToken(authentication);
         User user = userService.getReferenceById(((UserDetailsImpl) authentication.getPrincipal()).getId());
         String refreshToken = generateRefreshToken(user);
-        return new JwtResponse(accessToken, refreshToken);
+        return new JwtResponseDto(accessToken, refreshToken);
     }
 
     @Override
-    public void registerUser(SignupDto signupDto) {
+    public void registerUser(SignupRequestDto signupDto) {
         // Register user
         User user = User.builder()
                 .email(signupDto.email())
@@ -62,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public JwtResponse validateRefreshToken(String refreshToken) {
+    public JwtResponseDto validateRefreshToken(String refreshToken) {
         RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new RuntimeException("Invalid refresh Token"));
         if (token.getExpiredAt() < new Date().getTime()) {
@@ -72,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
         UserDetailsImpl userDetails = UserDetailsImpl.build(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new JwtResponse(generateAccessToken(authentication), null);
+        return new JwtResponseDto(generateAccessToken(authentication), null);
     }
 
     @Override
