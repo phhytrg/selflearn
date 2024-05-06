@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
     password: string;
   }) => {
     const res: JwtResponse = (await authApi.login(username, password)).data;
-    console.log(res);
     const jwtPayload: JwtPayload = JSON.parse(
       Buffer.from(res.accessToken.split('.')[1], 'base64').toString(),
     );
