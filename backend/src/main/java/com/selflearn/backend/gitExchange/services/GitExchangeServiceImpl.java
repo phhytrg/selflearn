@@ -1,5 +1,6 @@
 package com.selflearn.backend.gitExchange.services;
 
+import com.selflearn.backend.gitExchange.models.Content;
 import com.selflearn.backend.gitExchange.models.RepoTrees;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,11 +23,14 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     @Value("${selflearn.git.api.host}")
     private String gitApiHost;
 
+    @Value("${selflearn.git.token}")
+    private String gitToken;
+
     private final RestClient restClient;
 
     @Override
-    public RepoTrees getRepoTrees(String owner, String repo) {
-        RepoTrees repoTreesResponseDto = restClient
+    public RepoTrees getRepoTrees() {
+        return restClient
                 .get()
                 .uri(uriBuilder ->
                         uriBuilder
@@ -34,9 +38,24 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                                 .scheme("https")
                                 .path("/repos/{owner}/{repo}/git/trees/{sha}")
                                 .queryParam("recursive", "0")
-                                .build(owner, repo, gitSampleDirSha))
+                                .build(gitOwner, gitRepo, gitSampleDirSha))
+                .header("Authorization", "Bearer " + gitToken)
                 .retrieve()
                 .toEntity(RepoTrees.class).getBody();
-        return repoTreesResponseDto;
+    }
+
+    @Override
+    public Content getContent(String path) {
+        return restClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .host(gitApiHost)
+                                .scheme("https")
+                                .path("/repos/{owner}/{repo}/contents/{path}")
+                                .build(gitOwner, gitRepo, path))
+                .header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(Content.class).getBody();
     }
 }

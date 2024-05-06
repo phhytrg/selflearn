@@ -14,7 +14,12 @@ public class GitExchangeController {
     private final GitExchangeService gitExchangeService;
 
     @GetMapping("/trees")
-    public ResponseEntity<?> getRepoTrees(String owner, String repo) {
-        return ResponseEntity.ok(gitExchangeService.getRepoTrees(owner, repo));
+    public ResponseEntity<?> getRepoTrees() {
+        return ResponseEntity.ok(gitExchangeService.getRepoTrees());
+    }
+
+    @GetMapping("/content")
+    public ResponseEntity<?> getContent(String path) {
+        return ResponseEntity.ok(gitExchangeService.getContent(path));
     }
 }
