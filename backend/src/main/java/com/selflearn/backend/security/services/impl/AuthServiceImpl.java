@@ -1,7 +1,7 @@
 package com.selflearn.backend.security.services.impl;
 
 import com.selflearn.backend.security.RefreshTokenRepository;
-import com.selflearn.backend.security.UserDetailsImpl;
+import com.selflearn.backend.security.models.UserDetailsImpl;
 import com.selflearn.backend.security.dtos.JwtResponseDto;
 import com.selflearn.backend.security.dtos.LoginRequestDto;
 import com.selflearn.backend.security.dtos.SignupRequestDto;
@@ -19,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -89,6 +90,13 @@ public class AuthServiceImpl implements AuthService {
         List<RefreshToken> expiredTokens = refreshTokenRepository
                 .deleteRefreshTokenByExpiredAtBefore(new Date().getTime());
         log.info("Delete {} expired refresh tokens", expiredTokens.size());
+    }
+
+    @Override
+    public UserDetails retrieveCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        return userDetails;
     }
 
     private String generateAccessToken(Authentication authentication) {

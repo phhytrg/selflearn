@@ -1,4 +1,4 @@
-package com.selflearn.backend.security;
+package com.selflearn.backend.security.models;
 
 import com.selflearn.backend.user.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;

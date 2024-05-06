@@ -18,18 +18,16 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import java.util.Set;
 import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "users",
-uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-})
+@Table( name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email")
+        })
 @Getter
 @Setter
 @Builder
@@ -48,7 +46,7 @@ public class User {
     private String password;
 
     // Lazy fetch here
-    @ElementCollection(targetClass = UserRole.class)
+    @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Column(name = "roles", nullable = false)
     private Set<UserRole> roles;

@@ -1,6 +1,6 @@
 package com.selflearn.backend.security.jwt;
 
-import com.selflearn.backend.security.UserDetailsImpl;
+import com.selflearn.backend.security.models.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

@@ -1,6 +1,6 @@
 package com.selflearn.backend.security.services.impl;
 
-import com.selflearn.backend.security.UserDetailsImpl;
+import com.selflearn.backend.security.models.UserDetailsImpl;
 import com.selflearn.backend.user.models.User;
 import com.selflearn.backend.user.services.UserService;
 import lombok.RequiredArgsConstructor;
