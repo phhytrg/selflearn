@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
+import tailwindcss from 'tailwindcss';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -12,6 +13,11 @@ export default defineConfig({
       '@constants': `${path.resolve(__dirname, './src')}/shared/constants`,
       '@apis': `${path.resolve(__dirname, './src')}/shared/apis`,
       '@hooks': `${path.resolve(__dirname, './src')}/shared/hooks`,
+    },
+  },
+  css: {
+    postcss: {
+      plugins: [tailwindcss()],
     },
   },
 });
