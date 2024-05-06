@@ -8,6 +8,7 @@ import { FileContent } from './interfaces/FileContent';
 import { Content } from 'antd/es/layout/layout';
 import { useGetTree } from './queries/useTree';
 import { TreeNode } from './interfaces/Tree';
+import { NodeType } from './interfaces/NodeType';
 
 export const ProjectTab = () => {
   const [tree, setTree] = useState<TreeNode[]>([]);
@@ -31,7 +32,7 @@ export const ProjectTab = () => {
               e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
             ) => {
               e.preventDefault();
-              if (node.type === 'blob') {
+              if (node.type === NodeType.Blob) {
                 setContent(null);
                 const data: FileContent = (
                   await gitExchangeApi.getContent(`sample/${node.path}`)
