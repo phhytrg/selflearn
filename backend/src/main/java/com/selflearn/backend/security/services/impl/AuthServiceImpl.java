@@ -11,7 +11,9 @@ import com.selflearn.backend.security.services.AuthService;
 import com.selflearn.backend.user.models.User;
 import com.selflearn.backend.user.models.UserRole;
 import com.selflearn.backend.user.services.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +29,8 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
+@Transactional
 public class AuthServiceImpl implements AuthService {
 
     @Value("${selflearn.app.jwtRefreshExpirationMs}")
@@ -65,6 +69,7 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
                 .orElseThrow(() -> new RuntimeException("Invalid refresh Token"));
         if (token.getExpiredAt() < new Date().getTime()) {
+            refreshTokenRepository.delete(token);
             throw new RuntimeException("Refresh Token has expired");
         }
         User user = token.getUser();
@@ -77,6 +82,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(String refreshToken) {
         refreshTokenRepository.deleteByToken(refreshToken);
+    }
+
+    @Override
+    public void removeExpiredToken() {
+        List<RefreshToken> expiredTokens = refreshTokenRepository
+                .deleteRefreshTokenByExpiredAtBefore(new Date().getTime());
+        log.info("Delete {} expired refresh tokens", expiredTokens.size());
     }
 
     private String generateAccessToken(Authentication authentication) {

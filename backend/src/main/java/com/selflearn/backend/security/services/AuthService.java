@@ -9,4 +9,5 @@ public interface AuthService {
     void registerUser(SignupRequestDto signupDto);
     JwtResponseDto validateRefreshToken(String refreshToken);
     void logout(String refreshToken);
+    void removeExpiredToken();
 }
