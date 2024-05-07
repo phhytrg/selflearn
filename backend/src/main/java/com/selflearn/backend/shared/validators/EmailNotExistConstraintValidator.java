@@ -1,6 +1,6 @@
-package com.selflearn.backend.security.validators;
+package com.selflearn.backend.shared.validators;
 
-import com.selflearn.backend.security.validators.constraints.EmailNotExistConstraint;
+import com.selflearn.backend.shared.validators.constraints.EmailNotExistConstraint;
 import com.selflearn.backend.user.models.User;
 import com.selflearn.backend.user.services.UserService;
 import jakarta.validation.ConstraintValidator;

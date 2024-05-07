@@ -1,7 +1,8 @@
 package com.selflearn.backend.security.jwt;
 
-import com.selflearn.backend.security.UserDetailsImpl;
+import com.selflearn.backend.security.models.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -39,7 +40,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    private Map<String, Object> getClaims(UserDetailsImpl userPrincipal){
+    private Map<String, Object> getClaims(UserDetailsImpl userPrincipal) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("email", userPrincipal.getUsername());
         claims.put("roles", userPrincipal.getAuthorities());
@@ -55,10 +56,15 @@ public class JwtUtils {
         return UUID.fromString(((Claims) parser.parse(token).getPayload()).getSubject());
     }
 
-    public String getEmailFromToken(String token) {
+    public String getEmailFromToken(String token) throws Exception {
         JwtParser parser = Jwts.parser().verifyWith(getSecretKey()).build();
-        Map<String, ?> claims = parser.parseSignedClaims(token).getPayload();
-        return (String) claims.get("email");
+        try{
+
+            Map<String, ?> claims = parser.parseSignedClaims(token).getPayload();
+            return (String) claims.get("email");
+        }catch (ExpiredJwtException e){
+            throw new Exception("Token is expired");
+        }
     }
 
     public boolean validateJwtToken(String authToken) {

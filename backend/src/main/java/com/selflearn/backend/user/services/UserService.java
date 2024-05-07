@@ -8,4 +8,6 @@ public interface UserService {
     User fetchUserById(UUID id);
     User fetchUserByEmail(String email);
     User saveUser(User user);
+    User getReferenceById(UUID userId);
+    User getCurrentUser();
 }

@@ -24,10 +24,10 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "users",
-uniqueConstraints = {
-        @UniqueConstraint(columnNames = "email")
-})
+@Table( name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "email")
+        })
 @Getter
 @Setter
 @Builder
@@ -45,6 +45,7 @@ public class User {
     @NotNull
     private String password;
 
+    // Lazy fetch here
     @ElementCollection(targetClass = UserRole.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @Column(name = "roles", nullable = false)

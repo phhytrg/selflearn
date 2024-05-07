@@ -1,7 +1,7 @@
-package com.selflearn.backend.security.validators;
+package com.selflearn.backend.shared.validators;
 
-import com.selflearn.backend.security.dtos.SignupDto;
-import com.selflearn.backend.security.validators.constraints.PasswordsEqualConstraint;
+import com.selflearn.backend.security.dtos.SignupRequestDto;
+import com.selflearn.backend.shared.validators.constraints.PasswordsEqualConstraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -13,7 +13,7 @@ public class PasswordsEqualConstraintValidator implements ConstraintValidator<Pa
 
     @Override
     public boolean isValid(Object candidate, ConstraintValidatorContext constraintValidatorContext) {
-        SignupDto signupDto = (SignupDto) candidate;
+        SignupRequestDto signupDto = (SignupRequestDto) candidate;
         return signupDto.password().equals(signupDto.confirmPassword());
     }
 }

@@ -4,7 +4,7 @@ import { useAuth } from './hooks/useAuth';
 export const ProtectedRoute = () => {
   const { user } = useAuth();
   if (!user) {
-    // user is not authenticated
+    //Try to get user from local storage
     return <Navigate to="/login" />;
   }
   return <Outlet />;

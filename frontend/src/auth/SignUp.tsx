@@ -1,13 +1,21 @@
 import { authApi } from '@/shared/apis/auth-api';
 import { Button, Input } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from './hooks/useAuth';
 
 export const SignUpPage = () => {
+  const {user} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/', { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSignUp = async (e: any) => {
     e.preventDefault();

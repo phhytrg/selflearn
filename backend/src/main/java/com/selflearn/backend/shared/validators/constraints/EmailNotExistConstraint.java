@@ -1,6 +1,6 @@
-package com.selflearn.backend.security.validators.constraints;
+package com.selflearn.backend.shared.validators.constraints;
 
-import com.selflearn.backend.security.validators.EmailNotExistConstraintValidator;
+import com.selflearn.backend.shared.validators.EmailNotExistConstraintValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -16,6 +16,8 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = EmailNotExistConstraintValidator.class)
 public @interface EmailNotExistConstraint {
     String message() default "Email is not existent or not valid";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
 }

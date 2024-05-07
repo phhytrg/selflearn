@@ -1,8 +1,9 @@
 import { createContext, ReactElement, useState, useMemo } from 'react';
-import { JwtResponse } from '../types/Jwt';
-import { JwtPayload } from '../types/JwtPayload';
+import { JwtResponse } from '../interfaces/Jwt';
+import { JwtPayload } from '../interfaces/JwtPayload';
 import { authApi } from '@/shared/apis/auth-api';
 import { Buffer } from 'buffer';
+import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
 
 export const AuthContext = createContext<{
   user: JwtPayload | null;
@@ -21,9 +22,8 @@ export const AuthContext = createContext<{
 });
 
 export const AuthProvider = ({ children }: { children: ReactElement }) => {
-  const [user, setUser] = useState<JwtPayload | null>(null);
+  const [user, setUser] = useLocalStorage('user', null);
 
-  // call this function when you want to authenticate the user
   const login = async ({
     username,
     password,
@@ -32,16 +32,20 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
     password: string;
   }) => {
     const res: JwtResponse = (await authApi.login(username, password)).data;
-    const JwtPayload: JwtPayload = JSON.parse(
+    const jwtPayload: JwtPayload = JSON.parse(
       Buffer.from(res.accessToken.split('.')[1], 'base64').toString(),
     );
-    setUser(JwtPayload);
+    setUser(jwtPayload);
+    localStorage.setItem('accessToken', res.accessToken);
+    localStorage.setItem('refreshToken', res.refreshToken);
+  
     return Promise.resolve();
   };
 
-  // call this function to sign out logged in user
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
   };
 
   const value = useMemo(
