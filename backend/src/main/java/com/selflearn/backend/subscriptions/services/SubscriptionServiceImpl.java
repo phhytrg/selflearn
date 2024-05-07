@@ -16,4 +16,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public List<Subscription> saveAll(List<Subscription> subscriptions) {
         return subscriptionRepository.saveAll(subscriptions);
     }
+
+    @Override
+    public List<Subscription> fetchAll() {
+        return subscriptionRepository.findAll();
+    }
 }

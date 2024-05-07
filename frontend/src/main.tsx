@@ -49,13 +49,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ConfigProvider
-          theme={{
-            components: {
-              Table: {},
-            },
-          }}
-        >
+        <ConfigProvider select={{
+          style: {
+            width: '200px'
+          }
+        }}>
           <RouterProvider router={router} />
         </ConfigProvider>
       </AuthProvider>

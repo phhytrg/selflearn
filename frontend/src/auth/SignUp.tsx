@@ -1,8 +1,9 @@
-import { authApi } from '@/shared/apis/auth-api';
+
 import { Button, Input } from 'antd';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './hooks/useAuth';
+import { authApi } from '@/shared/apis';
 
 export const SignUpPage = () => {
   const {user} = useAuth();
