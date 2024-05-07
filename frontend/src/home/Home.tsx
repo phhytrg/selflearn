@@ -1,19 +1,21 @@
 import { Tabs, TabsProps } from 'antd';
 import { ProjectTab } from '../project/ProjectTab';
 import { TableTab } from '@/project/TableTab';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export const HomePage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location);
 
   const items: TabsProps['items'] = [
     {
-      key: 'project',
+      key: '/home/project',
       label: 'Project',
       children: <ProjectTab />,
     },
     {
-      key: 'table',
+      key: '/home/table',
       label: 'Table',
       children: <TableTab />,
     },
@@ -23,7 +25,8 @@ export const HomePage = () => {
     <Tabs
       className="h-full min-h-[100vh]"
       items={items}
-      defaultActiveKey="1"
+      defaultActiveKey="project"
+      activeKey={items.find((item) => item.key === location.pathname)?.key}
       onChange={(path) => {
         navigate(`${path}`, { replace: true });
       }}

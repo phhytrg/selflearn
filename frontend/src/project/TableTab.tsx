@@ -20,7 +20,7 @@ export const TableTab = () => {
     };
   });
 
-  const { data: clusters } = useGetAllClusters();
+  const { isLoading, data: clusters } = useGetAllClusters();
 
   return (
     <Table
@@ -32,6 +32,7 @@ export const TableTab = () => {
         position: ['bottomCenter'],
         hideOnSinglePage: true,
       }}
+      loading={isLoading}
     />
   );
 };
