@@ -6,10 +6,14 @@ export const gitExchangeApi = {
   },
 
   async getContent(path: string) {
-    return await axiosInstance.get(`/gitProjectExchange/content`, {
+    return await axiosInstance.get(`/gitProjectExchange/clusters/content`, {
       params: {
         path,
       },
     });
+  },
+
+  async getAllCluster(){
+    return await axiosInstance.get('/gitProjectExchange/clusters/all');
   }
 };

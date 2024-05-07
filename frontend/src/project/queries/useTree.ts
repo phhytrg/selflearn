@@ -1,4 +1,4 @@
-import { gitExchangeApi } from '@/shared/apis/git-exchange-api';
+import { gitExchangeApi } from '@/shared/apis';
 import { useQuery } from 'react-query';
 import { Tree } from '../interfaces/Tree';
 

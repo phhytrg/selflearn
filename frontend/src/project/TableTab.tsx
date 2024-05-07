@@ -1,9 +1,10 @@
 import { Table } from 'antd';
+import { useGetAllClusters } from './queries';
 
 export const TableTab = () => {
   const columns = [
     'name',
-    'provisionState',
+    'provisioningState',
     'powerState',
     'nodeCount',
     'mode',
@@ -19,27 +20,17 @@ export const TableTab = () => {
     };
   });
 
-  const dataSource = [
-    {
-      key: 1,
-      name: 'hello',
-      provisionState: 'a',
-      powerState: 'a',
-      nodeCount: 'a',
-      mode: 'a',
-      nodeImageVersion: 'a',
-      k8sVersion: 'a',
-      nodeSize: 'a',
-      os: 'a',
-    },
-  ];
+  const { data: clusters } = useGetAllClusters();
 
   return (
     <Table
       columns={columns}
-      dataSource={dataSource}
+      dataSource={clusters?.map((i) => {
+        return { ...i, key: i.name };
+      })}
       pagination={{
         position: ['bottomCenter'],
+        hideOnSinglePage: true,
       }}
     />
   );

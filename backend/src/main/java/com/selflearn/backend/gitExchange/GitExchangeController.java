@@ -18,8 +18,13 @@ public class GitExchangeController {
         return ResponseEntity.ok(gitExchangeService.getRepoTrees());
     }
 
-    @GetMapping("/content")
+    @GetMapping("/clusters/content")
     public ResponseEntity<?> getContent(String path) {
         return ResponseEntity.ok(gitExchangeService.getContent(path));
+    }
+
+    @GetMapping("/clusters/all")
+    public ResponseEntity<?> getAllClusters(){
+        return ResponseEntity.ok(gitExchangeService.getAllCluster());
     }
 }
