@@ -1,13 +1,13 @@
-package com.selflearn.backend.gitExchange.dtos;
+package com.selflearn.backend.gitExchange.models;
 
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class RepoTreesDto {
+public class GitRepoTrees {
     private String sha;
     private String url;
-    private List<TreeNodeDto> tree;
+    private List<GitTreeNode> tree;
     private boolean truncated;
 }

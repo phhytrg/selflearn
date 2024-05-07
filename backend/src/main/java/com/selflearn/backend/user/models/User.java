@@ -9,8 +9,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,11 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-@Entity
-@Table( name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "email")
-        })
+@Entity(name = "users")
 @Getter
 @Setter
 @Builder
@@ -40,6 +34,7 @@ public class User {
     private UUID id;
 
     @NotNull
+    @Column(unique = true)
     private String email;
 
     @NotNull

@@ -1,9 +1,9 @@
-package com.selflearn.backend.gitExchange.dtos;
+package com.selflearn.backend.gitExchange.models;
 
 import lombok.Data;
 
 @Data
-public class TreeNodeDto {
+public class GitTreeNode {
     private String path;
     private String mode;
     private String type;

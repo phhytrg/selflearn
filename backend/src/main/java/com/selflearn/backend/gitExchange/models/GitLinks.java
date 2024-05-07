@@ -1,9 +1,9 @@
-package com.selflearn.backend.gitExchange.dtos;
+package com.selflearn.backend.gitExchange.models;
 
 import lombok.Data;
 
 @Data
-public class LinksDto {
+public class GitLinks {
     private String self;
     private String git;
     private String html;

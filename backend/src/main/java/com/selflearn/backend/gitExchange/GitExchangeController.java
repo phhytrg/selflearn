@@ -27,4 +27,9 @@ public class GitExchangeController {
     public ResponseEntity<?> getAllClusters(){
         return ResponseEntity.ok(gitExchangeService.getAllCluster());
     }
+
+    @GetMapping("/sync")
+    public ResponseEntity<?> sync() {
+        return ResponseEntity.ok(gitExchangeService.syncWithDatabase());
+    }
 }
