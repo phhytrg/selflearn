@@ -27,7 +27,7 @@ export const useGetClusters = (
   return useQuery<Cluster[], Error>([QUERY_KEY, {params, fetchFromDb}], {
     queryFn: async () => {
       if (!fetchFromDb) {
-        return (await gitExchangeApi.getAllCluster()).data;
+        return (await gitExchangeApi.getClusters(params)).data;
       }
       return (await clusterApi.getClusters(params)).data;
     },

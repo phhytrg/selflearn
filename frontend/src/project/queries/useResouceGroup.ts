@@ -1,4 +1,4 @@
-import { resourceGroupApi } from '@/shared/apis';
+import { gitExchangeApi, resourceGroupApi } from '@/shared/apis';
 import { useQuery } from 'react-query';
 
 export const useGetResourceGroupsBySubscription = (
@@ -13,6 +13,9 @@ export const useGetResourceGroupsBySubscription = (
     Error
   >(['resources', subscriptionName], {
     queryFn: async () => {
+      if (!fetchFromDb) {
+        return (await gitExchangeApi.getResourceGroups(subscriptionName)).data;
+      }
       return (await resourceGroupApi.getBySubscriptionName(subscriptionName))
         .data;
     },

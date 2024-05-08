@@ -1,4 +1,4 @@
-import axiosInstance from "./axios-config";
+import axiosInstance from './axios-config';
 
 export const gitExchangeApi = {
   async getTrees() {
@@ -13,7 +13,25 @@ export const gitExchangeApi = {
     });
   },
 
-  async getAllCluster(){
-    return await axiosInstance.get('/gitProjectExchange/clusters/all');
+  getClusters: async (params: {
+    subscriptionName?: string;
+    resourceGroupName?: string;
+    clusterName?: string;
+  }) => {
+    return await axiosInstance.get('/gitProjectExchange/clusters', {
+      params,
+    });
+  },
+
+  getResourceGroups: async (subscriptionName?: string) => {
+    return await axiosInstance.get('/gitProjectExchange/resource-groups', {
+      params: {
+        subscriptionName,
+      },
+    });
+  },
+  
+  getSubscriptions: async () => {
+    return await axiosInstance.get('/gitProjectExchange/subscriptions');
   }
 };

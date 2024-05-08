@@ -80,30 +80,35 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     }
 
     @Override
-    public List<GitCluster> getAllCluster() {
-        // Find all json file
-        GitRepoTrees repoTreesDto = this.getRepoTrees();
-        List<GitTreeNode> nodes = repoTreesDto
-                .getTree()
-                .stream()
-                .filter(item -> item.getPath().matches(".*\\.json$"))
-                .toList();
-
-        List<GitCluster> clusters = new ArrayList<>();
-        for (GitTreeNode node : nodes) {
-            GitContent contentDto = this.getContent(baseDir + "/" + node.getPath());
-            String base64Content = contentDto.getContent();
-            String content = new String(Base64.decodeBase64(base64Content))
-                    .replaceAll("\n", "")
-                    .replaceAll(" ", "");
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
-                clusters.addAll(Arrays.asList(objectMapper.readValue(content, GitCluster[].class)));
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
+    public List<GitCluster> getClusters(String subscriptionName, String resourceGroupName, String clusterName) {
+        if (clusterName != null) {
+            List<String> urls = this.getRepoTrees().getTree().stream()
+                    .filter(gitTreeNode -> {
+                        String[] parts = gitTreeNode.getPath().split("/");
+                        return parts.length == 3 && parts[2].equals(clusterName);
+                    })
+                    .map(GitTreeNode::getUrl).toList();
+            return this.getClustersFromUrl(urls);
         }
-        return clusters;
+        if (resourceGroupName != null) {
+            List<String> urls = this.getRepoTrees().getTree().stream()
+                    .filter(gitTreeNode -> {
+                        String[] parts = gitTreeNode.getPath().split("/");
+                        return parts.length == 3 && parts[1].equals(resourceGroupName);
+                    })
+                    .map(GitTreeNode::getUrl).toList();
+            return this.getClustersFromUrl(urls);
+        }
+        if (subscriptionName != null) {
+            List<String> urls = this.getRepoTrees().getTree().stream()
+                    .filter(gitTreeNode -> {
+                        String[] parts = gitTreeNode.getPath().split("/");
+                        return parts.length == 3 && parts[0].equals(subscriptionName);
+                    })
+                    .map(GitTreeNode::getUrl).toList();
+            return this.getClustersFromUrl(urls);
+        }
+        return List.of();
     }
 
     @Override
@@ -167,7 +172,76 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     }
 
+    @Override
+    public List<String> getSubscriptions() {
+        GitRepoTrees repoTrees = restClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .host(gitApiHost)
+                                .scheme("https")
+                                .path("/repos/{owner}/{repo}/git/trees/{sha}")
+                                .build(gitOwner, gitRepo, gitSampleDirSha))
+                .header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(GitRepoTrees.class).getBody();
+        if (repoTrees == null) {
+            return List.of();
+        }
+        return repoTrees.getTree().stream().map(GitTreeNode::getPath).toList();
+    }
+
+    @Override
+    public List<String> getResourceGroups(String subscription) {
+
+        if (subscription == null) {
+            return this.getRepoTrees().getTree().stream()
+                    .filter(gitTreeNode -> gitTreeNode.getPath().split("/").length == 2)
+                    .map(gitTreeNode -> gitTreeNode.getPath().split("/")[1]).toList();
+        }
+        // Not duplicate code, just optimize performance
+        GitContent[] gitContents = restClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .host(gitApiHost)
+                                .scheme("https")
+                                .path("/repos/{owner}/{repo}/contents/" +
+                                        baseDir + "/" + subscription)
+                                .build(gitOwner, gitRepo))
+                .header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(GitContent[].class).getBody();
+        if (gitContents == null) {
+            return List.of();
+        }
+        return Arrays.stream(gitContents).map(gitContent -> {
+            String[] parts = gitContent.getPath().split("/");
+            return parts[parts.length - 1];
+        }).toList();
+    }
+
     private GitContent getContentFromUrl(String url) {
         return restClient.get().uri(url).header("Authorization", "Bearer " + gitToken).retrieve().toEntity(GitContent.class).getBody();
+    }
+
+
+    private List<GitCluster> getClustersFromUrl(List<String> urls) {
+        // Find all json file
+        List<GitCluster> clusters = new ArrayList<>();
+        for (String url : urls) {
+            GitContent contentDto = this.getContentFromUrl(url);
+            String base64Content = contentDto.getContent();
+            String content = new String(Base64.decodeBase64(base64Content))
+                    .replaceAll("\n", "")
+                    .replaceAll(" ", "");
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                clusters.addAll(Arrays.asList(objectMapper.readValue(content, GitCluster[].class)));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return clusters;
     }
 }

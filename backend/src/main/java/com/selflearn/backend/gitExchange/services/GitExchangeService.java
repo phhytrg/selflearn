@@ -10,6 +10,8 @@ import java.util.List;
 public interface GitExchangeService {
     GitRepoTrees getRepoTrees();
     GitContent getContent(String path);
-    List<GitCluster> getAllCluster();
+    List<GitCluster> getClusters(String subscriptionName, String resourceGroupName, String clusterName);
     List<Subscription> syncWithDatabase();
+    List<String> getSubscriptions();
+    List<String> getResourceGroups(String subscription);
 }

@@ -109,6 +109,9 @@ export const TableTab = () => {
               value={isFetchFromDb}
               onChange={(value) => {
                 setIsFetchFromDb(value);
+                setSelectedCluster(undefined);
+                setSelectedResource(undefined);
+                setSelectedSubscription(undefined);
               }}
             />
             &nbsp;
