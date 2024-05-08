@@ -1,15 +1,19 @@
 import { resourceGroupApi } from '@/shared/apis';
 import { useQuery } from 'react-query';
 
-const QUERY_KEY = ['resourceGroups'];
-
-export const useGetAllResourceGroups = () => {
-  return useQuery({
-    queryKey: QUERY_KEY,
+export const useGetResourceGroupsBySubscription = (
+  subscriptionName?: string,
+) => {
+  return useQuery<
+    {
+      id: string;
+      name: string;
+    }[],
+    Error
+  >(['resources', subscriptionName], {
     queryFn: async () => {
-      const response = await resourceGroupApi.getAll();
-      return response.data;
+      return (await resourceGroupApi.getBySubscriptionName(subscriptionName))
+        .data;
     },
-    refetchOnWindowFocus: false,
   });
 };

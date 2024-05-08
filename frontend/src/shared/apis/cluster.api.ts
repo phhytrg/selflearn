@@ -1,7 +1,13 @@
-import axiosInstance from "./axios-config";
+import axiosInstance from './axios-config';
 
 export const clusterApi = {
-  getAll: async () => {
-    return await axiosInstance.get('/clusters');
+  getClusters: async (params: {
+    subscriptionName?: string;
+    resourceGroupName?: string;
+    clusterName?: string;
+  }) => {
+    return await axiosInstance.get('/clusters', {
+      params,
+    });
   },
 };

@@ -1,7 +1,8 @@
 import { Select, Table } from 'antd';
-import { useGetAllClusters } from './queries';
 import { useGetAllSubscriptions } from './queries/useSubscription';
-import { useGetAllResourceGroups } from './queries/useResouceGroup';
+import { useState } from 'react';
+import { useGetResourceGroupsBySubscription } from './queries/useResouceGroup';
+import { useGetClusters } from './queries';
 
 export const TableTab = () => {
   const columns = [
@@ -22,9 +23,17 @@ export const TableTab = () => {
     };
   });
 
-  const { isLoading, data: clusters } = useGetAllClusters();
+  const [selectedSubscription, setSelectedSubscription] = useState<string>();
+  const [selectedResource, setSelectedResource] = useState<string>();
+  const [selectedCluster, setSelectedCluster] = useState<string>();
+  const { isLoading, data: clusters } = useGetClusters({
+    clusterName: selectedCluster,
+    subscriptionName: selectedSubscription,
+    resourceGroupName: selectedResource,
+  });
   const { data: subscriptions } = useGetAllSubscriptions();
-  const { data: resourceGroups } = useGetAllResourceGroups();
+  const { data: resourceGroups } =
+    useGetResourceGroupsBySubscription(selectedSubscription);
 
   return (
     <div>
@@ -41,6 +50,9 @@ export const TableTab = () => {
           className="text-center"
           placeholder={'Subscription'}
           allowClear
+          onChange={(value) => {
+            setSelectedSubscription(value);
+          }}
         />
         <Select
           options={resourceGroups?.map(
@@ -54,6 +66,9 @@ export const TableTab = () => {
           className="text-center"
           placeholder={'Resource group'}
           allowClear
+          onChange={(value) => {
+            setSelectedResource(value);
+          }}
         />
         <Select
           options={clusters?.map((cluster) => {
@@ -65,6 +80,9 @@ export const TableTab = () => {
           className="text-center"
           placeholder={'Cluster'}
           allowClear
+          onChange={(value) => {
+            setSelectedCluster(value);
+          }}
         />
       </div>
       <Table
