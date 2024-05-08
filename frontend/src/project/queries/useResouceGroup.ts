@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 
 export const useGetResourceGroupsBySubscription = (
   subscriptionName?: string,
+  fetchFromDb?: boolean,
 ) => {
   return useQuery<
     {
@@ -15,5 +16,6 @@ export const useGetResourceGroupsBySubscription = (
       return (await resourceGroupApi.getBySubscriptionName(subscriptionName))
         .data;
     },
+    refetchOnWindowFocus: false,
   });
 };

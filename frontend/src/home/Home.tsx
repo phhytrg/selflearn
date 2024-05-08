@@ -6,7 +6,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 export const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
 
   const items: TabsProps['items'] = [
     {

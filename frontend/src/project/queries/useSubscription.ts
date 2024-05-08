@@ -1,9 +1,9 @@
-import { subscriptionApi } from "@/shared/apis";
-import { useQuery } from "react-query";
+import { subscriptionApi } from '@/shared/apis';
+import { useQuery } from 'react-query';
 
 const QUERY_KEY = ['subscriptions'];
 
-export const useGetAllSubscriptions = () => {
+export const useGetAllSubscriptions = (fetchFromDb?: boolean) => {
   return useQuery({
     queryKey: QUERY_KEY,
     queryFn: async () => {

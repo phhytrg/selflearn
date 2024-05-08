@@ -7,6 +7,8 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
+    private static final Logger log = LoggerFactory.getLogger(JwtUtils.class);
     @Value("${selflearn.app.jwtSecret}")
     private String jwtSecret;
 

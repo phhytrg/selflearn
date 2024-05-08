@@ -16,26 +16,21 @@ export interface Cluster {
 
 const QUERY_KEY = 'clusters';
 
-export const useGetClusters = (params: {
-  subscriptionName?: string;
-  resourceGroupName?: string;
-  clusterName?: string;
-}) => {
-  return useQuery<Cluster[], Error>([QUERY_KEY, params], {
+export const useGetClusters = (
+  params: {
+    subscriptionName?: string;
+    resourceGroupName?: string;
+    clusterName?: string;
+  },
+  fetchFromDb?: boolean,
+) => {
+  return useQuery<Cluster[], Error>([QUERY_KEY, {params, fetchFromDb}], {
     queryFn: async () => {
+      if (!fetchFromDb) {
+        return (await gitExchangeApi.getAllCluster()).data;
+      }
       return (await clusterApi.getClusters(params)).data;
     },
     refetchOnWindowFocus: false,
   });
-  // return useQuery<Cluster[], Error>([
-  //   QUERY_KEY,
-  //   params,
-  //   async (params: {
-  //     subscriptionName?: string;
-  //     resourceGroupName?: string;
-  //     clusterName?: string;
-  //   }) => {
-  //     return await clusterApi.getClusters(params);
-  //   },
-  // ]);
 };
