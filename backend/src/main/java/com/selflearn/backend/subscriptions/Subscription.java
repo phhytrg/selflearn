@@ -31,6 +31,8 @@ public class Subscription {
     @Column(unique = true)
     private String name;
 
+    private String sha;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "subscription", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<ResourceGroup> resourceGroups;

@@ -6,6 +6,7 @@ import { useGetClusters } from './queries';
 import { useAuth } from '@/auth/hooks/useAuth';
 import { DatabaseFilled, GithubFilled } from '@ant-design/icons';
 import { useGetNodePools } from './queries/useNodePool';
+import { UserRole } from '@/shared/app.enum';
 
 export const TableTab = () => {
   const columns = [
@@ -110,7 +111,7 @@ export const TableTab = () => {
             setSelectedCluster(value);
           }}
         />
-        {!user?.roles.map((role) => role.authority).includes('ROLE_ADMIN') || (
+        {!user?.roles.map((role) => role.authority).includes(UserRole.Admin) || (
           <div className="flex flex-row text-center items-center">
             <GithubFilled /> &nbsp;
             <Switch

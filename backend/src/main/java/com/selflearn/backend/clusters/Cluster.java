@@ -30,6 +30,8 @@ public class Cluster {
     @Column(unique = true)
     private String name;
 
+    private String sha;
+
     @ManyToOne
     @JsonBackReference
     private ResourceGroup resourceGroup;
