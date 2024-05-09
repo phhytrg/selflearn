@@ -31,6 +31,7 @@ public class ResourceGroup {
     private UUID id;
     @Column(unique = true)
     private String name;
+    private String sha;
 
     @ManyToOne
     @JsonBackReference

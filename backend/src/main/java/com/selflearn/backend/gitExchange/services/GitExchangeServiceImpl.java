@@ -149,12 +149,14 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                 .getTree();
         for (GitTreeNode node : nodes) {
             String[] parts = node.getPath().split("/");
+            String sha = node.getSha();
             if (parts.length == 1) {
                 String subscriptionName = parts[0];
                 Subscription subscription = Subscription.builder()
                         .id(UUID.randomUUID())
                         .name(subscriptionName)
                         .resourceGroups(new ArrayList<>())
+                        .sha(sha)
                         .build();
                 subscriptions.put(subscriptionName, subscription);
             } else if (parts.length == 2) {
@@ -167,6 +169,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                         .subscription(subscription)
                         .name(resourceGroupName)
                         .clusters(new ArrayList<>())
+                        .sha(sha)
                         .build();
                 resourceGroupsList.add(resourceGroup);
                 resourceGroups.put(resourceGroupName, resourceGroup);
@@ -193,6 +196,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                             .name(parts[2])
                             .resourceGroup(resourceGroup)
                             .nodePools(nodePools)
+                            .sha(sha)
                             .build();
                     nodePools.forEach(nodePool -> nodePool.setCluster(cluster));
                     clusters.add(cluster);
