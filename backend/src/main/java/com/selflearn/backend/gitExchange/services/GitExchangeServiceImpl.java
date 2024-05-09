@@ -3,6 +3,8 @@ package com.selflearn.backend.gitExchange.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.selflearn.backend.clusters.Cluster;
+import com.selflearn.backend.gitExchange.daos.GitExchangeDao;
+import com.selflearn.backend.gitExchange.models.Commit;
 import com.selflearn.backend.gitExchange.models.GitNodePool;
 import com.selflearn.backend.gitExchange.models.GitContent;
 import com.selflearn.backend.gitExchange.models.GitRepoTrees;
@@ -35,9 +37,6 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     @Value("${selflearn.git.repo}")
     private String gitRepo;
 
-    @Value("${selflearn.git.sample.sha}")
-    private String gitSampleDirSha;
-
     @Value("${selflearn.git.api.host}")
     private String gitApiHost;
 
@@ -52,20 +51,11 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     private final RestClient restClient;
 
+    private final GitExchangeDao gitExchangeDao;
+
     @Override
     public GitRepoTrees getRepoTrees() {
-        return restClient
-                .get()
-                .uri(uriBuilder ->
-                        uriBuilder
-                                .host(gitApiHost)
-                                .scheme("https")
-                                .path("/repos/{owner}/{repo}/git/trees/{sha}")
-                                .queryParam("recursive", "0")
-                                .build(gitOwner, gitRepo, gitSampleDirSha))
-                .header("Authorization", "Bearer " + gitToken)
-                .retrieve()
-                .toEntity(GitRepoTrees.class).getBody();
+        return gitExchangeDao.getRepoTrees(this.gitExchangeDao.getLatestSampleDirSha());
     }
 
     @Override
@@ -225,7 +215,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                                 .host(gitApiHost)
                                 .scheme("https")
                                 .path("/repos/{owner}/{repo}/git/trees/{sha}")
-                                .build(gitOwner, gitRepo, gitSampleDirSha))
+                                .build(gitOwner, gitRepo, this.gitExchangeDao.getLatestSampleDirSha()))
                 .header("Authorization", "Bearer " + gitToken)
                 .retrieve()
                 .toEntity(GitRepoTrees.class).getBody();
