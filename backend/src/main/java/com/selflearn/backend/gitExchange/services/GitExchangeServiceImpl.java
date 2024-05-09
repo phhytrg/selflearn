@@ -47,6 +47,9 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     @Value("${selflearn.git.baseDir}")
     private String baseDir;
 
+    @Value("${selflearn.git.observeBranch}")
+    private String observeBranch;
+
     private final RestClient restClient;
 
     @Override
@@ -74,6 +77,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                                 .host(gitApiHost)
                                 .scheme("https")
                                 .path("/repos/{owner}/{repo}/contents/{path}")
+                                .queryParam("ref", observeBranch)
                                 .build(gitOwner, gitRepo, path))
                 .header("Authorization", "Bearer " + gitToken)
                 .retrieve()
@@ -248,6 +252,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                                 .scheme("https")
                                 .path("/repos/{owner}/{repo}/contents/" +
                                         baseDir + "/" + subscription)
+                                .queryParam("ref", observeBranch)
                                 .build(gitOwner, gitRepo))
                 .header("Authorization", "Bearer " + gitToken)
                 .retrieve()
