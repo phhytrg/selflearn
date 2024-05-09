@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.selflearn.backend.clusters.Cluster;
 import com.selflearn.backend.gitExchange.daos.GitExchangeDao;
-import com.selflearn.backend.gitExchange.models.Commit;
-import com.selflearn.backend.gitExchange.models.GitNodePool;
-import com.selflearn.backend.gitExchange.models.GitContent;
-import com.selflearn.backend.gitExchange.models.GitRepoTrees;
-import com.selflearn.backend.gitExchange.models.GitTreeNode;
+import com.selflearn.backend.gitExchange.dtos.CreateBlobResponse;
+import com.selflearn.backend.gitExchange.dtos.CreateCommitResponse;
+import com.selflearn.backend.gitExchange.dtos.CreateTreeResponse;
+import com.selflearn.backend.gitExchange.dtos.GitNodePool;
+import com.selflearn.backend.gitExchange.dtos.GitContent;
+import com.selflearn.backend.gitExchange.dtos.GitRepoTrees;
+import com.selflearn.backend.gitExchange.dtos.GitTreeNode;
 import com.selflearn.backend.nodePool.NodePool;
 import com.selflearn.backend.resourceGroups.ResourceGroup;
 import com.selflearn.backend.subscriptions.Subscription;
@@ -132,6 +134,69 @@ public class GitExchangeServiceImpl implements GitExchangeService {
             return this.getNodePoolsFromUrl(urls);
         }
         return List.of();
+    }
+
+    @Override
+    public CreateCommitResponse syncDataToGithub() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Subscription> subscriptions = subscriptionService.fetchAll();
+        List<CreateTreeResponse> createSubscriptionTrees = new ArrayList<>();
+        subscriptions.forEach(subscription -> {
+            List<ResourceGroup> resourceGroups = subscription.getResourceGroups();
+            List<CreateTreeResponse> createResourceResponse = new ArrayList<>();
+            resourceGroups.forEach(resourceGroup -> {
+                List<Cluster> clusters = resourceGroup.getClusters();
+                List<CreateTreeResponse> createClusterResponses = new ArrayList<>();
+                clusters.forEach(cluster -> {
+                    List<NodePool> nodePools = cluster.getNodePools();
+                    List<CreateBlobResponse> createBlobResponses = new ArrayList<>();
+                    try {
+                        createBlobResponses.add(this.gitExchangeDao.createBlob(objectMapper.writeValueAsString(nodePools)));
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
+                    // Create a tree for each cluster
+                    createClusterResponses.add(this.gitExchangeDao.createTree(
+                            resourceGroup.getSha(),
+                            createBlobResponses.stream().map(CreateBlobResponse::getSha).toList(),
+                            cluster.getName(),
+                            "100644",
+                            "blob"
+                    ));
+                });
+                // Create a tree for each resource group
+                createResourceResponse.add(this.gitExchangeDao.createTree(
+                        subscription.getSha(),
+                        createClusterResponses.stream().map(CreateTreeResponse::getSha).toList(),
+                        resourceGroup.getName(),
+                        "040000",
+                        "tree"
+                ));
+            });
+            // Create a tree for each subscription
+            createSubscriptionTrees.add(this.gitExchangeDao.createTree(
+                    this.gitExchangeDao.getLatestSampleDirSha(),
+                    createResourceResponse.stream().map(CreateTreeResponse::getSha).toList(),
+                    subscription.getName(),
+                    "040000",
+                    "tree"
+            ));
+        });
+
+        CreateTreeResponse baseTree = this.gitExchangeDao.createTree(
+                this.gitExchangeDao.getLatestSha(),
+                createSubscriptionTrees.stream().map(CreateTreeResponse::getSha).toList(),
+                baseDir,
+                "040000",
+                "tree"
+        );
+
+        CreateCommitResponse response = this.gitExchangeDao.createCommit(
+                baseTree.getSha(),
+                this.gitExchangeDao.getLatestSha(),
+                "Sync data from database");
+
+        return this.gitExchangeDao.updateReference(response);
     }
 
     @Override

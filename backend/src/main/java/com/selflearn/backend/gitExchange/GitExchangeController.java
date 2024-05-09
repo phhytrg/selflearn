@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,8 +49,8 @@ public class GitExchangeController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/sync")
-    public ResponseEntity<?> sync() {
+    @PutMapping("/sync-from-git")
+    public ResponseEntity<?> syncFromGit() {
         return ResponseEntity.ok(gitExchangeService.syncWithDatabase());
     }
 
@@ -65,5 +67,11 @@ public class GitExchangeController {
         return ResponseEntity.ok(gitExchangeService.getResourceGroups(subscriptionName).stream().map(resourceGroup -> new HashMap<>() {{
             put("name", resourceGroup);
         }}));
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping("/sync-from-database")
+    public ResponseEntity<?> syncFromDatabase() {
+        return ResponseEntity.ok(gitExchangeService.syncDataToGithub());
     }
 }

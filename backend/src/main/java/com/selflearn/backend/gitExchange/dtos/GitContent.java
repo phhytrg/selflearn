@@ -1,9 +1,9 @@
-package com.selflearn.backend.gitExchange.models;
+package com.selflearn.backend.gitExchange.dtos;
 
 import lombok.Data;
 
 @Data
-public class Content {
+public class GitContent {
     private String name;
     private String path;
     private String sha;
@@ -15,5 +15,5 @@ public class Content {
     private String type;
     private String content;
     private String encoding;
-    private Links _links;
+    private GitLinks _links;
 }
