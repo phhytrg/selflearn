@@ -2,10 +2,8 @@ package com.selflearn.backend.gitExchange.models;
 
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
-public class GitCluster {
+public class GitNodePool {
     private String name;
     private String provisioningState;
     private String powerState;

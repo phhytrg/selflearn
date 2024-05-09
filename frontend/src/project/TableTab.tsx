@@ -5,6 +5,7 @@ import { useGetResourceGroupsBySubscription } from './queries/useResouceGroup';
 import { useGetClusters } from './queries';
 import { useAuth } from '@/auth/hooks/useAuth';
 import { DatabaseFilled, GithubFilled } from '@ant-design/icons';
+import { useGetNodePools } from './queries/useNodePool';
 
 export const TableTab = () => {
   const columns = [
@@ -30,9 +31,8 @@ export const TableTab = () => {
   const [selectedSubscription, setSelectedSubscription] = useState<string>();
   const [selectedResource, setSelectedResource] = useState<string>();
   const [selectedCluster, setSelectedCluster] = useState<string>();
-  const { isLoading, data: clusters } = useGetClusters(
+  const { data: clusters } = useGetClusters(
     {
-      clusterName: selectedCluster,
       subscriptionName: selectedSubscription,
       resourceGroupName: selectedResource,
     },
@@ -41,6 +41,14 @@ export const TableTab = () => {
   const { data: subscriptions } = useGetAllSubscriptions();
   const { data: resourceGroups } =
     useGetResourceGroupsBySubscription(selectedSubscription);
+  const { isLoading, data: nodePools } = useGetNodePools(
+    {
+      clusterName: selectedCluster,
+      subscriptionName: selectedSubscription,
+      resourceGroupName: selectedResource,
+    },
+    isFetchFromDb,
+  );
   return (
     <div>
       <div className="flex flex-row gap-3 justify-center items-center">
@@ -102,7 +110,7 @@ export const TableTab = () => {
             setSelectedCluster(value);
           }}
         />
-        {!user?.roles.map((role) => role.authority).includes('ADMIN') || (
+        {!user?.roles.map((role) => role.authority).includes('ROLE_ADMIN') || (
           <div className="flex flex-row text-center items-center">
             <GithubFilled /> &nbsp;
             <Switch
@@ -121,7 +129,7 @@ export const TableTab = () => {
       </div>
       <Table
         columns={columns}
-        dataSource={clusters?.map((i) => {
+        dataSource={nodePools?.map((i) => {
           return { ...i, key: i.name };
         })}
         pagination={{

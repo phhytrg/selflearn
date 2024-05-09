@@ -29,9 +29,20 @@ public class GitExchangeController {
     @GetMapping("/clusters")
     public ResponseEntity<?> getClusters(
             @RequestParam(required = false) String subscriptionName,
+            @RequestParam(required = false) String resourceGroupName) {
+        return ResponseEntity.ok(gitExchangeService.getClusters(subscriptionName, resourceGroupName).stream().map(
+                cluster -> new HashMap<>() {{
+                    put("name", cluster);
+                }}
+        ));
+    }
+
+    @GetMapping("/node-pools")
+    public ResponseEntity<?> getNodePools(
+            @RequestParam(required = false) String subscriptionName,
             @RequestParam(required = false) String resourceGroupName,
             @RequestParam(required = false) String clusterName) {
-        return ResponseEntity.ok(gitExchangeService.getClusters(subscriptionName, resourceGroupName, clusterName));
+        return ResponseEntity.ok(gitExchangeService.getNodePools(subscriptionName, resourceGroupName, clusterName));
     }
 
     @GetMapping("/sync")

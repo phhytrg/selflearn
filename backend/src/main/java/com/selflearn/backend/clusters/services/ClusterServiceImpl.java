@@ -16,16 +16,13 @@ public class ClusterServiceImpl implements ClusterService {
     private final ClusterRepository clusterRepository;
 
     @Override
-    public List<Cluster> filter(@Nullable String subscriptionName, @Nullable String resourceName, @Nullable String clusterName) {
-        if(clusterName != null){
-            return clusterRepository.findClusterByName(clusterName);
-        }
+    public List<Cluster> getClusters(@Nullable String subscriptionName, @Nullable String resourceName) {
         if(resourceName != null){
             return clusterRepository.findClusterByResourceGroupName(resourceName);
         }
         if(subscriptionName != null) {
             return clusterRepository.findClusterBySubscriptionName(subscriptionName);
         }
-        return new ArrayList<>();
+        return clusterRepository.findAll();
     }
 }
