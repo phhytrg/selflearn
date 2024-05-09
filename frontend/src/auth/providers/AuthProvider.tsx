@@ -1,9 +1,9 @@
-import { createContext, ReactElement, useState, useMemo } from 'react';
+import { createContext, ReactElement, useMemo } from 'react';
 import { JwtResponse } from '../interfaces/Jwt';
 import { JwtPayload } from '../interfaces/JwtPayload';
-import { authApi } from '@/shared/apis/auth-api';
 import { Buffer } from 'buffer';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
+import { authApi } from '@/shared/apis';
 
 export const AuthContext = createContext<{
   user: JwtPayload | null;
