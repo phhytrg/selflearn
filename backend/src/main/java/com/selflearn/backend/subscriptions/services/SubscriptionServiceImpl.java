@@ -21,4 +21,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public List<Subscription> fetchAll() {
         return subscriptionRepository.findAll();
     }
+
+    @Override
+    public void deleteAll() {
+        subscriptionRepository.deleteAll();
+    }
 }

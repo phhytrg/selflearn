@@ -9,4 +9,5 @@ public interface SubscriptionService {
     List<Subscription> saveAll(List<Subscription> subscriptions);
 
     List<Subscription> fetchAll();
+    void deleteAll();
 }

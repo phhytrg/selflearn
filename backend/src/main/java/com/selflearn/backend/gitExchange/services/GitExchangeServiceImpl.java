@@ -142,6 +142,8 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     @Override
     public List<Subscription> syncWithDatabase() {
+        this.subscriptionService.deleteAll();
+
         Map<String, Subscription> subscriptions = new HashMap<>();
         Map<String, ResourceGroup> resourceGroups = new HashMap<>();
         GitRepoTrees repoTreesDto = this.getRepoTrees();

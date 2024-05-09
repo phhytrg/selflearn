@@ -24,7 +24,6 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class JwtUtils {
-    private static final Logger log = LoggerFactory.getLogger(JwtUtils.class);
     @Value("${selflearn.app.jwtSecret}")
     private String jwtSecret;
 
