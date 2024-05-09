@@ -82,21 +82,25 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     @Override
     public List<String> getClusters(String subscriptionName, String resourceGroupName) {
-        if(resourceGroupName != null){
+        if (resourceGroupName != null) {
             return this.getRepoTrees().getTree().stream()
                     .filter(gitTreeNode -> {
                         String[] parts = gitTreeNode.getPath().split("/");
                         return parts.length == 3 && parts[1].equals(resourceGroupName);
-                    })
-                    .map(GitTreeNode::getPath).toList();
+                    }).map(gitContent -> {
+                        String[] parts = gitContent.getPath().split("/");
+                        return parts[parts.length - 1];
+                    }).toList();
         }
-        if(subscriptionName != null) {
+        if (subscriptionName != null) {
             return this.getRepoTrees().getTree().stream()
                     .filter(gitTreeNode -> {
                         String[] parts = gitTreeNode.getPath().split("/");
                         return parts.length == 3 && parts[0].equals(subscriptionName);
-                    })
-                    .map(GitTreeNode::getPath).toList();
+                    }).map(gitContent -> {
+                        String[] parts = gitContent.getPath().split("/");
+                        return parts[parts.length - 1];
+                    }).toList();
         }
         return this.getRepoTrees().getTree().stream()
                 .filter(gitTreeNode -> gitTreeNode.getPath().split("/").length == 3)
