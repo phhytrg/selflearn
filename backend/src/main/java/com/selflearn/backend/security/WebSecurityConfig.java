@@ -36,6 +36,10 @@ public class WebSecurityConfig {
     private String apiPrefix;
     @Value("${apiVersion}")
     private String apiVersion;
+    @Value("${apiPrefix}")
+    private String apiPrefix;
+    @Value("${apiVersion}")
+    private String apiVersion;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
@@ -48,6 +52,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService);
