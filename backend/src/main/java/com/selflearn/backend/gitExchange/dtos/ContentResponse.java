@@ -3,7 +3,7 @@ package com.selflearn.backend.gitExchange.dtos;
 import lombok.Data;
 
 @Data
-public class GitContent {
+public class ContentResponse {
     private String name;
     private String path;
     private String sha;

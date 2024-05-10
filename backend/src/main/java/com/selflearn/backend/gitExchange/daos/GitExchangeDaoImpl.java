@@ -1,5 +1,6 @@
 package com.selflearn.backend.gitExchange.daos;
 
+import com.selflearn.backend.gitExchange.dtos.ContentResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateBlobRequest;
 import com.selflearn.backend.gitExchange.dtos.CreateBlobResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateCommitRequest;
@@ -148,5 +149,44 @@ public class GitExchangeDaoImpl implements GitExchangeDao {
                 .body("{\"sha\":\"" + createCommitResponse.getSha() + "\"}")
                 .retrieve().toEntity(Void.class);
         return createCommitResponse;
+    }
+
+    @Override
+    public ContentResponse getContentFromPath(String path) {
+        return restClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .host(gitApiHost)
+                                .scheme("https")
+                                .path("/repos/{owner}/{repo}/contents/{path}")
+                                .queryParam("ref", observeBranch)
+                                .build(gitOwner, gitRepo, path))
+                .header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(ContentResponse.class).getBody();
+    }
+
+    @Override
+    public ContentResponse getContentFromUrl(String url) {
+        return restClient.get().uri(url).header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(ContentResponse.class).getBody();
+    }
+
+    @Override
+    public ContentResponse[] getContentsFromPath(String path) {
+        return restClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .host(gitApiHost)
+                                .scheme("https")
+                                .path("/repos/{owner}/{repo}/contents/{path}")
+                                .queryParam("ref", observeBranch)
+                                .build(gitOwner, gitRepo, path))
+                .header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(ContentResponse[].class).getBody();
     }
 }

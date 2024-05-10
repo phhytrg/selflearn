@@ -8,7 +8,7 @@ import com.selflearn.backend.gitExchange.dtos.CreateBlobResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateCommitResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateTreeResponse;
 import com.selflearn.backend.gitExchange.dtos.GitNodePool;
-import com.selflearn.backend.gitExchange.dtos.GitContent;
+import com.selflearn.backend.gitExchange.dtos.ContentResponse;
 import com.selflearn.backend.gitExchange.dtos.GitRepoTrees;
 import com.selflearn.backend.gitExchange.dtos.GitTreeNode;
 import com.selflearn.backend.nodePool.NodePool;
@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.utils.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,7 +50,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     @Value("${selflearn.git.observeBranch}")
     private String observeBranch;
 
-    private final RestClient restClient;
+//    private final RestClient restClient;
 
     private final GitExchangeDao gitExchangeDao;
 
@@ -61,19 +60,8 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     }
 
     @Override
-    public GitContent getContent(String path) {
-        return restClient
-                .get()
-                .uri(uriBuilder ->
-                        uriBuilder
-                                .host(gitApiHost)
-                                .scheme("https")
-                                .path("/repos/{owner}/{repo}/contents/{path}")
-                                .queryParam("ref", observeBranch)
-                                .build(gitOwner, gitRepo, path))
-                .header("Authorization", "Bearer " + gitToken)
-                .retrieve()
-                .toEntity(GitContent.class).getBody();
+    public ContentResponse getContent(String path) {
+        return this.gitExchangeDao.getContentFromPath(path);
     }
 
     @Override
@@ -241,7 +229,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                     throw new IllegalStateException("Resource group not found: " + resourceGroupName);
                 }
 
-                GitContent gitContent = this.getContentFromUrl(node.getUrl());
+                ContentResponse gitContent = this.gitExchangeDao.getContentFromUrl(node.getUrl());
                 String base64Content = gitContent.getContent();
                 String content = new String(Base64.decodeBase64(base64Content))
                         .replaceAll("\n", "")
@@ -273,21 +261,9 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     @Override
     public List<String> getSubscriptions() {
-        GitRepoTrees repoTrees = restClient
-                .get()
-                .uri(uriBuilder ->
-                        uriBuilder
-                                .host(gitApiHost)
-                                .scheme("https")
-                                .path("/repos/{owner}/{repo}/git/trees/{sha}")
-                                .build(gitOwner, gitRepo, this.gitExchangeDao.getLatestSampleDirSha()))
-                .header("Authorization", "Bearer " + gitToken)
-                .retrieve()
-                .toEntity(GitRepoTrees.class).getBody();
-        if (repoTrees == null) {
-            return List.of();
-        }
-        return repoTrees.getTree().stream().map(GitTreeNode::getPath).toList();
+        return this.gitExchangeDao.getRepoTrees(this.gitExchangeDao.getLatestSampleDirSha())
+                .getTree().stream()
+                .map(GitTreeNode::getPath).toList();
     }
 
     @Override
@@ -299,19 +275,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                     .map(gitTreeNode -> gitTreeNode.getPath().split("/")[1]).toList();
         }
         // Not duplicate code, just optimize performance
-        GitContent[] gitContents = restClient
-                .get()
-                .uri(uriBuilder ->
-                        uriBuilder
-                                .host(gitApiHost)
-                                .scheme("https")
-                                .path("/repos/{owner}/{repo}/contents/" +
-                                        baseDir + "/" + subscription)
-                                .queryParam("ref", observeBranch)
-                                .build(gitOwner, gitRepo))
-                .header("Authorization", "Bearer " + gitToken)
-                .retrieve()
-                .toEntity(GitContent[].class).getBody();
+        ContentResponse[] gitContents = this.gitExchangeDao.getContentsFromPath(baseDir+"/"+subscription);
         if (gitContents == null) {
             return List.of();
         }
@@ -321,16 +285,11 @@ public class GitExchangeServiceImpl implements GitExchangeService {
         }).toList();
     }
 
-    private GitContent getContentFromUrl(String url) {
-        return restClient.get().uri(url).header("Authorization", "Bearer " + gitToken).retrieve().toEntity(GitContent.class).getBody();
-    }
-
-
     private List<GitNodePool> getNodePoolsFromUrl(List<String> urls) {
         // Find all json file
         List<GitNodePool> clusters = new ArrayList<>();
         for (String url : urls) {
-            GitContent contentDto = this.getContentFromUrl(url);
+            ContentResponse contentDto = this.gitExchangeDao.getContentFromUrl(url);
             String base64Content = contentDto.getContent();
             String content = new String(Base64.decodeBase64(base64Content))
                     .replaceAll("\n", "")

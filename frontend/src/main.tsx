@@ -11,6 +11,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ConfigProvider } from 'antd';
 import { ProjectTab } from './project/ProjectTab';
 import { TableTab } from './project/TableTab';
+import { LandingPage } from './landing/Landing';
+import { AdminPage } from './admin/Admin';
 
 const queryClient = new QueryClient();
 
@@ -33,6 +35,14 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: '/',
+        element: <LandingPage />,
+      },
+      {
+        path: '/admin',
+        element: <AdminPage/>,
+      }
     ],
   },
   {

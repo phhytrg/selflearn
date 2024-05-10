@@ -1,5 +1,6 @@
 package com.selflearn.backend.gitExchange.daos;
 
+import com.selflearn.backend.gitExchange.dtos.ContentResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateBlobResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateCommitResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateTreeResponse;
@@ -15,4 +16,7 @@ public interface GitExchangeDao {
     CreateTreeResponse createTree(String baseTreeSha, List<String> newTreeSha, String path, String mode, String type);
     CreateCommitResponse createCommit(String treeSha, String parentCommitSha, String commitMessage);
     CreateCommitResponse updateReference(CreateCommitResponse createCommitResponse);
+    ContentResponse getContentFromPath(String path);
+    ContentResponse getContentFromUrl(String url);
+    ContentResponse[] getContentsFromPath(String path);
 }
