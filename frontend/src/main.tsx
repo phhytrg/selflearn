@@ -41,8 +41,8 @@ const router = createBrowserRouter([
       },
       {
         path: '/admin',
-        element: <AdminPage/>,
-      }
+        element: <AdminPage />,
+      },
     ],
   },
   {
@@ -59,11 +59,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ConfigProvider select={{
-          style: {
-            width: '200px'
-          }
-        }}>
+        <ConfigProvider
+          select={{
+            style: {
+              width: '200px',
+            },
+          }}
+        >
           <RouterProvider router={router} />
         </ConfigProvider>
       </AuthProvider>
