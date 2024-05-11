@@ -2,11 +2,12 @@ package com.selflearn.backend.clusters.services;
 
 import com.selflearn.backend.clusters.Cluster;
 import com.selflearn.backend.clusters.ClusterRepository;
+import com.selflearn.backend.nodePool.dtos.DeleteResourcesResponse;
 import jakarta.annotation.Nullable;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -17,12 +18,23 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public List<Cluster> getClusters(@Nullable String subscriptionName, @Nullable String resourceName) {
-        if(resourceName != null){
+        if (resourceName != null) {
             return clusterRepository.findClusterByResourceGroupName(resourceName);
         }
-        if(subscriptionName != null) {
+        if (subscriptionName != null) {
             return clusterRepository.findClusterBySubscriptionName(subscriptionName);
         }
         return clusterRepository.findAll();
+    }
+
+    @Transactional
+    @Override
+    public DeleteResourcesResponse deleteCluster(String clusterName) {
+        Cluster cluster = clusterRepository.findByName(clusterName);
+        clusterRepository.delete(cluster);
+        return DeleteResourcesResponse.builder()
+                .noClustersDeleted(1)
+                .noNodePoolsDeleted(cluster.getNodePools().size())
+                .build();
     }
 }

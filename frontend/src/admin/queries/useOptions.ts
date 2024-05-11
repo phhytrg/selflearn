@@ -11,6 +11,7 @@ export const useGetSubscriptions = () => {
     queryFn: async () => {
       return (await subscriptionApi.getAll()).data;
     },
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -21,6 +22,7 @@ export const useGetResources = (subscriptionName: string) => {
       return (await resourceGroupApi.getBySubscriptionName(subscriptionName))
         .data;
     },
+    refetchOnWindowFocus: false,
   });
 };
 
@@ -41,6 +43,7 @@ export const useGetClusters = (
           })
         ).data;
       },
+      refetchOnWindowFocus: false,
     },
   );
 };

@@ -16,5 +16,5 @@ public interface ClusterRepository extends JpaRepository<Cluster, UUID> {
             "where s.name = :subscriptionName", nativeQuery = true)
     List<Cluster> findClusterBySubscriptionName(String subscriptionName);
 
-    List<Cluster> findClusterByName(String clusterName);
+    Cluster findByName(String clusterName);
 }

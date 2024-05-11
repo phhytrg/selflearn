@@ -2,11 +2,13 @@ import { InboxOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Col, Row } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import OptionsSelect from './Select';
+import { useSelect } from '../hooks/useSelect';
 
 const CreateNodePoolsForm = () => {
+  const params = useSelect();
   return (
-    <div>
-      <OptionsSelect />
+    <>
+      <OptionsSelect {...params} />
       <Row className="mt-2" align={'middle'} justify={'center'}>
         <Col span={20}>
           <Dragger>
@@ -19,16 +21,16 @@ const CreateNodePoolsForm = () => {
           </Dragger>
         </Col>
       </Row>
-      <Row gutter={[0, 32]} justify={'end'}>
+      <Row justify={'end'}>
         <Button
           type="primary"
-          className="mt-3 w-[100px]"
+          className="mt-3 mr-10 w-[100px]"
           icon={<PlusOutlined />}
         >
           Create
         </Button>
       </Row>
-    </div>
+    </>
   );
 };
 

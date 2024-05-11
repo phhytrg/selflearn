@@ -6,6 +6,12 @@ export const useSelect = () => {
     useState<string>('');
   const [selectedCluster, setSelectedCluster] = useState<string>('');
 
+  const reset = () => {
+    setSelectedCluster('');
+    setSelectedResourceGroup('');
+    setSelectedSubscription('');
+  };
+
   return {
     selectedSubscription,
     setSelectedSubscription,
@@ -13,5 +19,6 @@ export const useSelect = () => {
     setSelectedResourceGroup,
     selectedCluster,
     setSelectedCluster,
+    reset,
   };
 };

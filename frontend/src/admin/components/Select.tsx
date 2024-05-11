@@ -4,10 +4,15 @@ import {
   useGetResources,
   useGetSubscriptions,
 } from '../queries/useOptions';
-import { useSelect } from '../hooks/useSelect';
 
-const OptionsSelect = () => {
-  const params = useSelect();
+const OptionsSelect = (params: {
+  selectedSubscription: string;
+  setSelectedSubscription: (value: string) => void;
+  selectedResourceGroup: string;
+  setSelectedResourceGroup: (value: string) => void;
+  selectedCluster: string;
+  setSelectedCluster: (value: string) => void;
+}) => {
   const { data: subscriptions } = useGetSubscriptions();
   const { data: resources } = useGetResources(params.selectedSubscription);
   const { data: clusters, isLoading: isLoadingClusters } = useGetClusters(
@@ -33,6 +38,7 @@ const OptionsSelect = () => {
         onChange={(value) => {
           params.setSelectedResourceGroup(value);
         }}
+        allowClear
       />
       <AutoComplete
         popupMatchSelectWidth={200}
