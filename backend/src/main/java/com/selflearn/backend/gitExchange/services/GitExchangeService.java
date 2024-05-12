@@ -12,9 +12,9 @@ public interface GitExchangeService {
     GitRepoTrees getRepoTrees();
     ContentResponse getContent(String path);
     List<String> getClusters(String subscriptionName, String resourceGroupName);
-    List<Subscription> syncWithDatabase();
+    List<Subscription> syncDatabaseWithGithub();
     List<String> getSubscriptions();
     List<String> getResourceGroups(String subscription);
     List<GitNodePool> getNodePools(String subscriptionName, String resourceGroupName, String clusterName);
-    CreateCommitResponse syncDataToGithub();
+    CreateCommitResponse syncGithubWithDatabase();
 }

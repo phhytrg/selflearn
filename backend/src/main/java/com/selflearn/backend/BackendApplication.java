@@ -13,6 +13,11 @@ public class BackendApplication {
         return new LocalValidatorFactoryBean();
     }
 
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(BackendApplication.class, args);
     }

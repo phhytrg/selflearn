@@ -1,11 +1,15 @@
 package com.selflearn.backend.subscriptions.services;
 
+import com.selflearn.backend.clusters.Cluster;
+import com.selflearn.backend.nodePool.NodePool;
 import com.selflearn.backend.nodePool.dtos.DeleteResourcesResponse;
+import com.selflearn.backend.resourceGroups.ResourceGroup;
 import com.selflearn.backend.subscriptions.Subscription;
 import com.selflearn.backend.subscriptions.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,5 +48,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                                 .sum())
                         .sum())
                 .build();
+    }
+
+    @Override
+    public Subscription saveSubscription(Subscription subscription) {
+        return subscriptionRepository.save(subscription);
     }
 }

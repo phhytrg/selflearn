@@ -3,6 +3,8 @@ package com.selflearn.backend.gitExchange.dtos;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Builder
 public class CreateTreeRequest {
@@ -15,5 +17,5 @@ public class CreateTreeRequest {
         private String sha;
     }
     private String base_tree;
-    private TreeNodeRequest[] tree;
+    private List<TreeNodeRequest> tree;
 }

@@ -99,7 +99,7 @@ public class GitExchangeDaoImpl implements GitExchangeDao {
     }
 
     @Override
-    public CreateTreeResponse createTree(String baseTreeSha, List<String> newTreeSha, String path, String mode, String type) {
+    public CreateTreeResponse createTree(String baseTreeSha, List<CreateTreeRequest.TreeNodeRequest> tree) {
         return this.restClient.post().uri(
                         uriBuilder -> uriBuilder
                                 .host(gitApiHost)
@@ -109,15 +109,7 @@ public class GitExchangeDaoImpl implements GitExchangeDao {
                 .header("Authorization", "Bearer " + gitToken)
                 .body(CreateTreeRequest.builder()
                         .base_tree(baseTreeSha)
-                        .tree(new CreateTreeRequest.TreeNodeRequest[]{
-                                newTreeSha.stream().map(sha -> CreateTreeRequest.TreeNodeRequest.builder()
-                                                .path(path)
-                                                .mode(mode)
-                                                .type(type)
-                                                .sha(sha)
-                                                .build())
-                                        .findFirst().orElseThrow(() -> new RuntimeException("Cannot create tree"))
-                        })
+                        .tree(tree)
                         .build())
                 .retrieve().toEntity(CreateTreeResponse.class).getBody();
     }
