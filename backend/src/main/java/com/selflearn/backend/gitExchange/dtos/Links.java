@@ -1,4 +1,4 @@
-package com.selflearn.backend.gitExchange.models;
+package com.selflearn.backend.gitExchange.dtos;
 
 import lombok.Data;
 

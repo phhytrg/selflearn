@@ -7,7 +7,10 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -56,14 +59,14 @@ public class JwtUtils {
         return UUID.fromString(((Claims) parser.parse(token).getPayload()).getSubject());
     }
 
-    public String getEmailFromToken(String token) throws Exception {
+    public String getEmailFromToken(String token) throws BadCredentialsException {
         JwtParser parser = Jwts.parser().verifyWith(getSecretKey()).build();
         try{
 
             Map<String, ?> claims = parser.parseSignedClaims(token).getPayload();
             return (String) claims.get("email");
         }catch (ExpiredJwtException e){
-            throw new Exception("Token is expired");
+            throw new BadCredentialsException("Token expired");
         }
     }
 

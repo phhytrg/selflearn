@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { HOST_API } from '../constants';
 
 axios.defaults.baseURL = HOST_API;
 
-const axiosInstance = axios.create({
+const axiosInstance: AxiosInstance = axios.create({
   baseURL: `${HOST_API}/api/v1`,
   headers: {
     'Content-type': 'application/json',

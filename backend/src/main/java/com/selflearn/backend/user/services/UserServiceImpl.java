@@ -23,8 +23,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User fetchUserByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new FetchNotFoundException("User Not Found with email: " + email, null));
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -41,7 +40,6 @@ public class UserServiceImpl implements UserService {
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String current = authentication.getName();
-        return userRepository.findByEmail(current)
-                .orElseThrow(() -> new FetchNotFoundException("User Not Found", null));
+        return userRepository.findByEmail(current);
     }
 }
