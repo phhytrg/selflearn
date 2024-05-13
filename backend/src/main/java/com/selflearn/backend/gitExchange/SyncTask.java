@@ -13,7 +13,7 @@ public class SyncTask {
 
     private final GitExchangeService gitExchangeService;
 
-    @Scheduled(cron = "0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     void syncDataToGithubEveryday() {
         // sync data to github
         this.gitExchangeService.syncGithubWithDatabase();
