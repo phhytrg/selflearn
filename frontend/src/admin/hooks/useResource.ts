@@ -12,15 +12,3 @@ export const useDeleteResource = () => {
     },
   );
 };
-
-export const useCreateResource = () => {
-  return useMutation(
-    async (params: {
-      subscriptionName: string;
-      resourceGroupName: string;
-      clusterName: string;
-    }) => {
-      // return await nodePoolApi.create(params);
-    },
-  );
-};

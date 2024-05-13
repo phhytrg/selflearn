@@ -20,6 +20,25 @@ export const nodePoolApi = {
     resourceGroupName: string;
     clusterName: string;
   }) => {
-    return (await axiosInstance.delete('/node-pools/delete', { params })); 
+    return await axiosInstance.delete('/node-pools/delete', { params });
   },
+  upload: async (params: {
+    subscriptionName: string;
+    resourceGroupName: string;
+    clusterName: string;
+    file: File;
+  }) => {
+    const formData = new FormData();
+    formData.append('file', params.file);
+    formData.append('subscriptionName', params.subscriptionName);
+    formData.append('resourceGroupName', params.resourceGroupName);
+    formData.append('clusterName', params.clusterName);
+
+    return await axiosInstance.post('/node-pools/upload', formData, {
+      transformRequest: (data, headers) => {
+        headers["Content-Type"] = "multipart/form-data";
+        return data;
+      },
+    });
+  }
 };
