@@ -10,7 +10,7 @@ import com.selflearn.backend.gitExchange.dtos.GitRepoTrees;
 import java.util.List;
 
 public interface GitExchangeDao {
-    GitRepoTrees getRepoTrees(String sha);
+    GitRepoTrees getRepoTrees(String sha, boolean recursive);
     String getLatestSha();
     String getLatestSampleDirSha();
     CreateBlobResponse createBlob(String content);

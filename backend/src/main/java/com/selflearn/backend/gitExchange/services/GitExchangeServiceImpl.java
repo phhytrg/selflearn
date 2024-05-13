@@ -57,7 +57,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     @Override
     public GitRepoTrees getRepoTrees() {
-        return gitExchangeDao.getRepoTrees(this.gitExchangeDao.getLatestSampleDirSha());
+        return gitExchangeDao.getRepoTrees(this.gitExchangeDao.getLatestSampleDirSha(), true);
     }
 
     @Override
@@ -269,7 +269,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     @Override
     public List<String> getSubscriptions() {
-        return this.gitExchangeDao.getRepoTrees(this.gitExchangeDao.getLatestSampleDirSha())
+        return this.gitExchangeDao.getRepoTrees(this.gitExchangeDao.getLatestSampleDirSha(), false)
                 .getTree().stream()
                 .map(GitTreeNode::getPath).toList();
     }
