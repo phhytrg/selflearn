@@ -18,6 +18,6 @@ public class ResourceGroupController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping()
     public ResponseEntity<?> getAllResourceGroupsBySubscriptionName(@RequestParam(required = false) String subscriptionName) {
-        return ResponseEntity.ok(resourceGroupService.fetchAllBySubscriptionId(subscriptionName));
+        return ResponseEntity.ok(resourceGroupService.findAllBySubscriptionName(subscriptionName));
     }
 }

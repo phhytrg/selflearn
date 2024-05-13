@@ -10,4 +10,6 @@ public interface ClusterService {
     List<Cluster> getClusters(@Nullable String subscriptionName, @Nullable String resourceName);
 
     DeleteResourcesResponse deleteCluster(String clusterName);
+
+    Cluster findByName(String clusterName);
 }

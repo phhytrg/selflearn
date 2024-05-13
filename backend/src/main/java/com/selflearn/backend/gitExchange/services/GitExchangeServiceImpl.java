@@ -147,7 +147,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                             .sha(createCluster.getSha())
                             .build());
                 }
-                CreateTreeResponse createTreeResponse = this.gitExchangeDao.createTree(
+                CreateTreeResponse resourceGroupTree = this.gitExchangeDao.createTree(
                         resourceGroup.getSha(),
                         clusterNodes
                 );
@@ -156,10 +156,10 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                         .mode("040000")
                         .path(resourceGroup.getName())
                         .type("tree")
-                        .sha(createTreeResponse.getSha())
+                        .sha(resourceGroupTree.getSha())
                         .build());
             }
-            CreateTreeResponse createSubs = this.gitExchangeDao.createTree(
+            CreateTreeResponse subscriptionTree = this.gitExchangeDao.createTree(
                     subscription.getSha(),
                     resourceNodes
             );
@@ -167,11 +167,11 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                     .mode("040000")
                     .path(subscription.getName())
                     .type("tree")
-                    .sha(createSubs.getSha())
+                    .sha(subscriptionTree.getSha())
                     .build());
         }
 
-        CreateTreeResponse createSubscriptions = this.gitExchangeDao.createTree(
+        CreateTreeResponse sampleTree = this.gitExchangeDao.createTree(
                 gitExchangeDao.getLatestSampleDirSha(),
                 subscriptionNodes
         );
@@ -183,7 +183,7 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                         .mode("040000")
                         .path(baseDir)
                         .type("tree")
-                        .sha(createSubscriptions.getSha())
+                        .sha(sampleTree.getSha())
                         .build())
         );
 

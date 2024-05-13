@@ -12,4 +12,5 @@ public interface SubscriptionService {
     void deleteAll();
     DeleteResourcesResponse deleteSubscription(String subscriptionName);
     Subscription saveSubscription(Subscription subscription);
+    Subscription findByName(String subscriptionName);
 }

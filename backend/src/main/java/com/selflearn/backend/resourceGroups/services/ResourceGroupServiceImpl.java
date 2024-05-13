@@ -15,7 +15,7 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
     private final ResourceGroupRepository resourceGroupRepository;
 
     @Override
-    public List<ResourceGroup> fetchAllBySubscriptionId(@Nullable String subscriptionName) {
+    public List<ResourceGroup> findAllBySubscriptionName(@Nullable String subscriptionName) {
         if (subscriptionName == null) {
             return resourceGroupRepository.findAll();
         }
@@ -33,5 +33,10 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
                         .mapToLong(cluster -> cluster.getNodePools().size())
                         .sum())
                 .build();
+    }
+
+    @Override
+    public ResourceGroup findByName(String resourceGroupName) {
+        return resourceGroupRepository.findByName(resourceGroupName);
     }
 }

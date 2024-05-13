@@ -37,4 +37,9 @@ public class ClusterServiceImpl implements ClusterService {
                 .noNodePoolsDeleted(cluster.getNodePools().size())
                 .build();
     }
+
+    @Override
+    public Cluster findByName(String clusterName) {
+        return clusterRepository.findByName(clusterName);
+    }
 }

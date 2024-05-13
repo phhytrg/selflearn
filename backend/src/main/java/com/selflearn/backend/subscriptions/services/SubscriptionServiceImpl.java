@@ -54,4 +54,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public Subscription saveSubscription(Subscription subscription) {
         return subscriptionRepository.save(subscription);
     }
+
+    @Override
+    public Subscription findByName(String subscriptionName) {
+        return subscriptionRepository.findByName(subscriptionName);
+    }
 }
