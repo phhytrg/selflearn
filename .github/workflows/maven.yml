@@ -29,21 +29,22 @@ jobs:
 
     - name: Create properties file
       run: |
-        touch src/main/resources/application.properties
-        echo apiVersion="v1" >> src/main/resources/application.properties
-        echo apiPrefix="api" >> src/main/resources/application.properties
-        echo selflearn.app.jwtSecret=$${{secrets.JWT_SECRET}} >> src/main/resources/application.properties
-        echo selflearn.app.jwtExpirationMs = "86400000" >> src/main/resources/application.properties
-        echo selflearn.app.jwtRefreshExpirationMs = "2628000000000" >> src/main/resources/application.properties
-        echo spring.jpa.properties.hibernate.dialect = "org.hibernate.dialect.PostgreSQLDialect" >> src/main/resources/application.properties
-        spring.jpa.hibernate.ddl-auto = "update" >> src/main/resources/application.properties
-        spring.datasource.url = ${{secrets.DATASOURCE_URL}} >> src/main/resources/application.properties
-        selflearn.git.owner = "phhytrg" >> src/main/resources/application.properties
-        selflearn.git.repo = "selflearn" >> src/main/resources/application.properties
-        selflearn.git.api.host = "api.github.com" >> src/main/resources/application.properties
-        selflearn.git.token = ${{secrets.GIT_TOKEN}} >> src/main/resources/application.properties
-        selflearn.git.baseDir = "sample" >> src/main/resources/application.properties
-        selflearn.git.observeBranch = "observe" >> src/main/resources/application.properties
+        cd src/main/resources
+        touch application.properties
+        echo apiVersion="v1" >> application.properties
+        echo apiPrefix="api" >> application.properties
+        echo selflearn.app.jwtSecret=$${{secrets.JWT_SECRET}} >> application.properties
+        echo selflearn.app.jwtExpirationMs = "86400000" >> application.properties
+        echo selflearn.app.jwtRefreshExpirationMs = "2628000000000" >> application.properties
+        echo spring.jpa.properties.hibernate.dialect = "org.hibernate.dialect.PostgreSQLDialect" >> application.properties
+        spring.jpa.hibernate.ddl-auto = "update" >> application.properties
+        spring.datasource.url = ${{secrets.DATASOURCE_URL}} >> application.properties
+        selflearn.git.owner = "phhytrg" >> application.properties
+        selflearn.git.repo = "selflearn" >> application.properties
+        selflearn.git.api.host = "api.github.com" >> application.properties
+        selflearn.git.token = ${{secrets.GIT_TOKEN}} >> application.properties
+        selflearn.git.baseDir = "sample" >> application.properties
+        selflearn.git.observeBranch = "observe" >> application.properties
         cat src/main/resources/application.properties
     # - name: Write Properties
     #   uses: christian-draeger/write-properties@1.1.0
