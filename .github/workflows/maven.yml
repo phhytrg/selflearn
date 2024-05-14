@@ -29,7 +29,7 @@ jobs:
 
     - name: Create properties file
       run: |
-        cd backend/src/main/resources
+        cd ./src/main/resources
         touch application.properties
         echo apiVersion="v1" >> application.properties
         echo apiPrefix="api" >> application.properties
