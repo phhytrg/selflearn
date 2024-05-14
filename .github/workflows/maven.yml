@@ -30,7 +30,7 @@ jobs:
     - name: Write Properties
       uses: christian-draeger/write-properties@1.1.0
       with: 
-        path: './src/main/resources/application.properties'
+        path: 'src/main/resources/application.properties'
         property: |
           'apiVersion'
           'apiPrefix'
