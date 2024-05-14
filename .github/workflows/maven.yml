@@ -38,14 +38,14 @@ jobs:
         echo selflearn.app.jwtExpirationMs = "86400000" >> application.properties
         echo selflearn.app.jwtRefreshExpirationMs = "2628000000000" >> application.properties
         echo spring.jpa.properties.hibernate.dialect = "org.hibernate.dialect.PostgreSQLDialect" >> application.properties
-        spring.jpa.hibernate.ddl-auto = "update" >> application.properties
-        spring.datasource.url = ${{secrets.DATASOURCE_URL}} >> application.properties
-        selflearn.git.owner = "phhytrg" >> application.properties
-        selflearn.git.repo = "selflearn" >> application.properties
-        selflearn.git.api.host = "api.github.com" >> application.properties
-        selflearn.git.token = ${{secrets.GIT_TOKEN}} >> application.properties
-        selflearn.git.baseDir = "sample" >> application.properties
-        selflearn.git.observeBranch = "observe" >> application.properties
+        echo spring.jpa.hibernate.ddl-auto = "update" >> application.properties
+        echo spring.datasource.url = ${{secrets.DATASOURCE_URL}} >> application.properties
+        echo selflearn.git.owner = "phhytrg" >> application.properties
+        echo selflearn.git.repo = "selflearn" >> application.properties
+        echo selflearn.git.api.host = "api.github.com" >> application.properties
+        echo selflearn.git.token = ${{secrets.GIT_TOKEN}} >> application.properties
+        echo selflearn.git.baseDir = "sample" >> application.properties
+        echo selflearn.git.observeBranch = "observe" >> application.properties
         cat src/main/resources/application.properties
     # - name: Write Properties
     #   uses: christian-draeger/write-properties@1.1.0
