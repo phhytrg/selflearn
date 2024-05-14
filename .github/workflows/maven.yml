@@ -57,7 +57,7 @@ jobs:
       uses: mr-smithers-excellent/docker-build-push@v6
       with:
         image: phhytrg/selflearn
-        tags: v1, latest, a7e919f83b01239d2fc162f8a879acb61d13609c
+        tags: v1, latest, 864484775a494973678f405ef01add7e2735b5c7
         registry: docker.io
         dockerfile: ./backend/Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
