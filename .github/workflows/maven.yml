@@ -46,7 +46,7 @@ jobs:
         echo selflearn.git.token = ${{secrets.GIT_TOKEN}} >> application.properties
         echo selflearn.git.baseDir = "sample" >> application.properties
         echo selflearn.git.observeBranch = "observe" >> application.properties
-        cat src/main/resources/application.properties
+        cat application.properties
     # - name: Write Properties
     #   uses: christian-draeger/write-properties@1.1.0
     #   with: 
