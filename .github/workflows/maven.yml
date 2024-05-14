@@ -47,42 +47,6 @@ jobs:
         echo selflearn.git.baseDir = "sample" >> application.properties
         echo selflearn.git.observeBranch = "observe" >> application.properties
         cat application.properties
-    # - name: Write Properties
-    #   uses: christian-draeger/write-properties@1.1.0
-    #   with: 
-    #     path: 'src/main/resources/application.properties'
-    #     property: |
-    #       'apiVersion'
-    #       'apiPrefix'
-    #       'selflearn.app.jwtSecret'
-    #       'selflearn.app.jwtExpirationMs'
-    #       'selflearn.app.jwtRefreshExpirationMs'
-    #       'spring.jpa.properties.hibernate.dialect'
-    #       'spring.jpa.hibernate.ddl-auto'
-    #       'spring.datasource.url'
-    #       'spring.jpa.show-sql'
-    #       'selflearn.git.owner'
-    #       'selflearn.git.repo'
-    #       'selflearn.git.api.host'
-    #       'selflearn.git.token'
-    #       'selflearn.git.baseDir'
-    #       'selflearn.git.observeBranch'
-    #     value: |
-    #       'v1'
-    #       'api'
-    #       ${{secrets.JWT_SECRET}}
-    #       '86400000'
-    #       '2628000000000'
-    #       'org.hibernate.dialect.PostgreSQLDialect'
-    #       'update'
-    #       ${{secrets.DATASOURCE_URL}}
-    #       'true'
-    #       'phhytrg'
-    #       'selflearn'
-    #       'api.github.com'
-    #       ${{secrets.GIT_TOKEN}}
-    #       'sample'
-    #       'observe'
           
     - name: Build with Maven
       run: mvn clean install
@@ -93,7 +57,7 @@ jobs:
       uses: mr-smithers-excellent/docker-build-push@v6
       with:
         image: phhytrg/selflearn
-        tags: v1, latest
+        tags: v1, latest, a7e919f83b01239d2fc162f8a879acb61d13609c
         registry: docker.io
         dockerfile: ./backend/Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
