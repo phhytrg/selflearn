@@ -26,6 +26,44 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+
+    - name: Write Properties
+      uses: christian-draeger/write-properties@1.1.0
+      with: 
+        path: './src/main/resources/application.properties'
+        property: |
+          'apiVersion'
+          'apiPrefix'
+          'selflearn.app.jwtSecret'
+          'selflearn.app.jwtExpirationMs'
+          'selflearn.app.jwtRefreshExpirationMs'
+          'spring.jpa.properties.hibernate.dialect'
+          'spring.jpa.hibernate.ddl-auto'
+          'spring.datasource.url'
+          'spring.jpa.show-sql'
+          'selflearn.git.owner'
+          'selflearn.git.repo'
+          'selflearn.git.api.host'
+          'selflearn.git.token'
+          'selflearn.git.baseDir'
+          'selflearn.git.observeBranch'
+        value: |
+          'v1'
+          'api'
+          ${{secrets.JWT_SECRET}}
+          '86400000'
+          '2628000000000'
+          'org.hibernate.dialect.PostgreSQLDialect'
+          'update'
+          ${{secrets.DATASOURCE_URL}}
+          'true'
+          'phhytrg'
+          'selflearn'
+          'api.github.com'
+          ${{secrets.GIT_TOKEN}}
+          'sample'
+          'observe'
+          
     - name: Build with Maven
       run: mvn clean install
       
