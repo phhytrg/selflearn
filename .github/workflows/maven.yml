@@ -77,9 +77,8 @@ jobs:
       with:
         app-name: 'selflearn-api'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_62170a77871144c58e9c6230b85f04b1 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_62a4f0fb89ac4f17b1f2dea304dd92f0 }}/selflearn:${{ github.sha }}'
-
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7bc4805d12824b4495665e6ea79dfef5 }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_ad5c7552b516464c96a7c316447527f7 }}/selflearn:${{ github.sha }}'
         
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
     # - name: Update dependency graph
