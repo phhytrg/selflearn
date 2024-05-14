@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://index.docker.io/v1/
-        username: ${{ secrets.AzureAppService_ContainerUsername_f069305bae084acf825e5a69715508be }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_6467e0af35bf4172af5f8e45e17e346b }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_ba79db5b1d6c49bf914c264018fd194a }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_5235632e66c94a8cbd35a518f259571f }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_f069305bae084acf825e5a69715508be }}/phhytrg/selflearn:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_ba79db5b1d6c49bf914c264018fd194a }}/phhytrg/selflearn:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'selflearn-api'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_fcd212db1aa24262b268982d2654c9a3 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_f069305bae084acf825e5a69715508be }}/phhytrg/selflearn:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_ae6fd75d85d14fb78fd4c7c37ffef37b }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_ba79db5b1d6c49bf914c264018fd194a }}/phhytrg/selflearn:${{ github.sha }}'
