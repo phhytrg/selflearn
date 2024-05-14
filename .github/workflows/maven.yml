@@ -29,6 +29,7 @@ jobs:
 
     - name: Create properties file
       run: |
+        mkdir ./src/main/resources
         cd ./src/main/resources
         touch application.properties
         echo apiVersion="v1" >> application.properties
