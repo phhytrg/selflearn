@@ -1,5 +1,6 @@
 package com.selflearn.backend.gitExchange.daos;
 
+import com.selflearn.backend.gitExchange.dtos.ContentResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateBlobRequest;
 import com.selflearn.backend.gitExchange.dtos.CreateBlobResponse;
 import com.selflearn.backend.gitExchange.dtos.CreateCommitRequest;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
+import java.net.URI;
 import java.util.List;
 
 @Component
@@ -40,15 +42,20 @@ public class GitExchangeDaoImpl implements GitExchangeDao {
     private final RestClient restClient;
 
     @Override
-    public GitRepoTrees getRepoTrees(String sha) {
+    public GitRepoTrees getRepoTrees(String sha, boolean recursive) {
         return restClient
                 .get()
                 .uri(uriBuilder ->
-                        uriBuilder
+                        recursive ? uriBuilder
                                 .host(gitApiHost)
                                 .scheme("https")
                                 .path("/repos/{owner}/{repo}/git/trees/{sha}")
-                                .queryParam("recursive", "0")
+                                .queryParam("recursive", true)
+                                .build(gitOwner, gitRepo, sha)
+                                : uriBuilder
+                                .host(gitApiHost)
+                                .scheme("https")
+                                .path("/repos/{owner}/{repo}/git/trees/{sha}")
                                 .build(gitOwner, gitRepo, sha))
                 .header("Authorization", "Bearer " + gitToken)
                 .retrieve()
@@ -73,7 +80,7 @@ public class GitExchangeDaoImpl implements GitExchangeDao {
 
     @Override
     public String getLatestSampleDirSha() {
-        GitTreeNode gitTreeNode = this.getRepoTrees(this.getLatestSha()).getTree().stream()
+        GitTreeNode gitTreeNode = this.getRepoTrees(this.getLatestSha(), true).getTree().stream()
                 .filter(tree -> tree.getPath().equals(baseDir))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Cannot find baseDir in latest commit"));
@@ -98,7 +105,7 @@ public class GitExchangeDaoImpl implements GitExchangeDao {
     }
 
     @Override
-    public CreateTreeResponse createTree(String baseTreeSha, List<String> newTreeSha, String path, String mode, String type) {
+    public CreateTreeResponse createTree(String baseTreeSha, List<CreateTreeRequest.TreeNodeRequest> tree) {
         return this.restClient.post().uri(
                         uriBuilder -> uriBuilder
                                 .host(gitApiHost)
@@ -108,15 +115,7 @@ public class GitExchangeDaoImpl implements GitExchangeDao {
                 .header("Authorization", "Bearer " + gitToken)
                 .body(CreateTreeRequest.builder()
                         .base_tree(baseTreeSha)
-                        .tree(new CreateTreeRequest.TreeNodeRequest[]{
-                                newTreeSha.stream().map(sha -> CreateTreeRequest.TreeNodeRequest.builder()
-                                                .path(path)
-                                                .mode(mode)
-                                                .type(type)
-                                                .sha(sha)
-                                                .build())
-                                        .findFirst().orElseThrow(() -> new RuntimeException("Cannot create tree"))
-                        })
+                        .tree(tree)
                         .build())
                 .retrieve().toEntity(CreateTreeResponse.class).getBody();
     }
@@ -148,5 +147,44 @@ public class GitExchangeDaoImpl implements GitExchangeDao {
                 .body("{\"sha\":\"" + createCommitResponse.getSha() + "\"}")
                 .retrieve().toEntity(Void.class);
         return createCommitResponse;
+    }
+
+    @Override
+    public ContentResponse getContentFromPath(String path) {
+        return restClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .host(gitApiHost)
+                                .scheme("https")
+                                .path("/repos/{owner}/{repo}/contents/{path}")
+                                .queryParam("ref", observeBranch)
+                                .build(gitOwner, gitRepo, path))
+                .header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(ContentResponse.class).getBody();
+    }
+
+    @Override
+    public ContentResponse getContentFromUrl(String url) {
+        return restClient.get().uri(url).header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(ContentResponse.class).getBody();
+    }
+
+    @Override
+    public ContentResponse[] getContentsFromPath(String path) {
+        return restClient
+                .get()
+                .uri(uriBuilder ->
+                        uriBuilder
+                                .host(gitApiHost)
+                                .scheme("https")
+                                .path("/repos/{owner}/{repo}/contents/{path}")
+                                .queryParam("ref", observeBranch)
+                                .build(gitOwner, gitRepo, path))
+                .header("Authorization", "Bearer " + gitToken)
+                .retrieve()
+                .toEntity(ContentResponse[].class).getBody();
     }
 }

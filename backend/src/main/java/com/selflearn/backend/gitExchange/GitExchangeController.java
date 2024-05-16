@@ -49,9 +49,9 @@ public class GitExchangeController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/sync-from-git")
+    @PutMapping("/sync-db-with-git")
     public ResponseEntity<?> syncFromGit() {
-        return ResponseEntity.ok(gitExchangeService.syncWithDatabase());
+        return ResponseEntity.ok(gitExchangeService.syncDatabaseWithGithub());
     }
 
     @GetMapping("/subscriptions")
@@ -70,8 +70,8 @@ public class GitExchangeController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/sync-from-database")
+    @PostMapping("/sync-git-with-db")
     public ResponseEntity<?> syncFromDatabase() {
-        return ResponseEntity.ok(gitExchangeService.syncDataToGithub());
+        return ResponseEntity.ok(gitExchangeService.syncGithubWithDatabase());
     }
 }

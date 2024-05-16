@@ -11,6 +11,10 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ConfigProvider } from 'antd';
 import { ProjectTab } from './project/ProjectTab';
 import { TableTab } from './project/TableTab';
+import { LandingPage } from './landing/Landing';
+import { AdminPage } from './admin/Admin';
+import CreateNodePoolsForm from './admin/components/CreateNodePoolsForm';
+import DeleteForm from './admin/components/DeleteForm';
 
 const queryClient = new QueryClient();
 
@@ -33,6 +37,22 @@ const router = createBrowserRouter([
           },
         ],
       },
+      {
+        path: '/',
+        element: <LandingPage />,
+      },
+      {
+        path: '/admin',
+        element: <AdminPage />,
+        children: [
+          {
+            path: '/admin/create-node-pools',
+          },
+          {
+            path: '/admin/delete',
+          }
+        ]
+      },
     ],
   },
   {
@@ -49,11 +69,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <ConfigProvider select={{
-          style: {
-            width: '200px'
-          }
-        }}>
+        <ConfigProvider
+          select={{
+            style: {
+              width: '200px',
+            },
+          }}
+        >
           <RouterProvider router={router} />
         </ConfigProvider>
       </AuthProvider>

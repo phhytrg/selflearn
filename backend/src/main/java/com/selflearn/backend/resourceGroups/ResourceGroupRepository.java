@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface ResourceGroupRepository extends JpaRepository<ResourceGroup, UUID> {
     @Query()
     List<ResourceGroup> findResourceGroupBySubscriptionName(String subscriptionName);
+
+    ResourceGroup findByName(String resourceGroupName);
 }

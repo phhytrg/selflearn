@@ -33,5 +33,13 @@ export const gitExchangeApi = {
   
   getSubscriptions: async () => {
     return await axiosInstance.get('/gitProjectExchange/subscriptions');
-  }
+  },
+
+  syncDatabaseWithGithub: async () => {
+    return await axiosInstance.put('/gitProjectExchange/sync-db-with-git');
+  },
+
+  syncGithubWithDatabase: async () => {
+    return await axiosInstance.post('/gitProjectExchange/sync-git-with-db');
+  },
 };

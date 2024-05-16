@@ -39,9 +39,9 @@ export const TableTab = () => {
     },
     isFetchFromDb,
   );
-  const { data: subscriptions } = useGetAllSubscriptions();
+  const { data: subscriptions } = useGetAllSubscriptions(isFetchFromDb);
   const { data: resourceGroups } =
-    useGetResourceGroupsBySubscription(selectedSubscription);
+    useGetResourceGroupsBySubscription(selectedSubscription, isFetchFromDb);
   const { isLoading, data: nodePools } = useGetNodePools(
     {
       clusterName: selectedCluster,
