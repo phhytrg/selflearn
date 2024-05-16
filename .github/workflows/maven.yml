@@ -26,6 +26,27 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven
+
+    - name: Create properties file
+      run: |
+        mkdir ./src/main/resources
+        cd ./src/main/resources
+        touch application.properties
+        echo apiVersion="v1" >> application.properties
+        echo apiPrefix="api" >> application.properties
+        echo selflearn.app.jwtSecret=$${{secrets.JWT_SECRET}} >> application.properties
+        echo selflearn.app.jwtExpirationMs = "86400000" >> application.properties
+        echo selflearn.app.jwtRefreshExpirationMs = "2628000000000" >> application.properties
+        echo spring.jpa.properties.hibernate.dialect = "org.hibernate.dialect.PostgreSQLDialect" >> application.properties
+        echo spring.jpa.hibernate.ddl-auto = "update" >> application.properties
+        echo spring.datasource.url = ${{secrets.DATASOURCE_URL}} >> application.properties
+        echo selflearn.git.owner = "phhytrg" >> application.properties
+        echo selflearn.git.repo = "selflearn" >> application.properties
+        echo selflearn.git.api.host = "api.github.com" >> application.properties
+        echo selflearn.git.token = ${{secrets.GIT_TOKEN}} >> application.properties
+        echo selflearn.git.baseDir = "sample" >> application.properties
+        echo selflearn.git.observeBranch = "observe" >> application.properties
+        cat application.properties
     - name: Build with Maven
       run: mvn clean install
       
@@ -35,12 +56,29 @@ jobs:
       uses: mr-smithers-excellent/docker-build-push@v6
       with:
         image: phhytrg/selflearn
-        tags: v1, latest
+        tags: v1, latest, ${{ github.sha }}
         registry: docker.io
         dockerfile: ./backend/Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+    - name: Deploy to Azure Web App
+      id: deploy-to-webapp
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'selflearn-api'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7bc4805d12824b4495665e6ea79dfef5 }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_ad5c7552b516464c96a7c316447527f7 }}/selflearn:${{ github.sha }}'
+        
     # Optional: Uploads the full dependency graph to GitHub to improve the quality of Dependabot alerts this repository can receive
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
+    # - name: Update dependency graph
+    #   uses: advanced-security/maven-dependency-submission-action@571e99aab1055c2e71a1e2309b9691de18d6b7d6
