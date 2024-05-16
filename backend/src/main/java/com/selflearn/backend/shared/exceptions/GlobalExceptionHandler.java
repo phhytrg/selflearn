@@ -55,4 +55,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private ResponseEntity<Object> handleMessageAuth(BadCredentialsException e, HttpServletRequest request) {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    @ResponseBody
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    protected ResponseEntity<?> handleRuntimeException(RuntimeException e, HttpServletRequest request) {
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
