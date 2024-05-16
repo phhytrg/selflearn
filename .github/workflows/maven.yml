@@ -39,8 +39,10 @@ jobs:
         echo selflearn.app.jwtRefreshExpirationMs = "2628000000000" >> application.properties
         echo spring.jpa.properties.hibernate.dialect = "org.hibernate.dialect.PostgreSQLDialect" >> application.properties
         echo spring.jpa.hibernate.ddl-auto = "update" >> application.properties
-        echo spring.datasource.url = ${{secrets.DATASOURCE_URL}} >> application.properties
+        echo spring.datasource.driver-class-name="org.postgresql.Driver" >> application.properties
+        echo spring.datasource.url = "jdbc:postgresql://selflearn.postgres.database.azure.com:5432/postgres?user=selflearn&sslmode=require" >> application.properties
         echo spring.datasource.password = ${{secrets.DB_PASSWORD}} >> application.properties
+        
         echo selflearn.git.owner = "phhytrg" >> application.properties
         echo selflearn.git.repo = "selflearn" >> application.properties
         echo selflearn.git.api.host = "api.github.com" >> application.properties
