@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.6",
+    "@uidotdev/usehooks": "^2.4.1",
     "antd": "^5.16.5",
     "axios": "^1.6.8",
     "buffer": "^6.0.3",

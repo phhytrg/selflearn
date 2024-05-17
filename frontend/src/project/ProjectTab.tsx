@@ -1,14 +1,13 @@
-import { buildTreeFromArray } from '@/shared/utils/tree';
-import { FileOutlined, FolderFilled } from '@ant-design/icons';
-import { Button, Layout, Skeleton } from 'antd';
-import Sider from 'antd/es/layout/Sider';
-import { useState, useEffect } from 'react';
-import { gitExchangeApi } from '@/shared/apis/git-exchange-api';
-import { FileContent } from './interfaces/FileContent';
-import { Content } from 'antd/es/layout/layout';
-import { useGetTree } from './queries/useTree';
-import { TreeNode } from './interfaces/Tree';
-import { NodeType } from './interfaces/NodeType';
+import { gitExchangeApi } from "@/shared/apis";
+import { buildTreeFromArray } from "@/shared/utils/tree";
+import { FolderFilled, FileOutlined } from "@ant-design/icons";
+import { Button, Layout, Skeleton } from "antd";
+import { Content } from "antd/es/layout/layout";
+import Sider from "antd/es/layout/Sider";
+import { useState, useEffect } from "react";
+import { TreeNode, NodeType, FileContent } from "./interfaces";
+import { useGetTree } from "./queries";
+
 
 export const ProjectTab = () => {
   const [tree, setTree] = useState<TreeNode[]>([]);
