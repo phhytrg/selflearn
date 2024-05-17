@@ -34,7 +34,7 @@ jobs:
         touch application.properties
         echo apiVersion="v1" >> application.properties
         echo apiPrefix="api" >> application.properties
-        echo selflearn.app.jwtSecret=$${{secrets.JWT_SECRET}} >> application.properties
+        echo selflearn.app.jwtSecret=${{secrets.JWT_SECRET}} >> application.properties
         echo selflearn.app.jwtExpirationMs = "86400000" >> application.properties
         echo selflearn.app.jwtRefreshExpirationMs = "2628000000000" >> application.properties
         echo spring.jpa.properties.hibernate.dialect = "org.hibernate.dialect.PostgreSQLDialect" >> application.properties
