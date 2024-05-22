@@ -50,7 +50,6 @@ export const TableTab = () => {
     },
     isFetchFromDb,
   );
-  console.log(user)
   return (
     <div>
       <div className="flex flex-row gap-3 justify-center items-center">

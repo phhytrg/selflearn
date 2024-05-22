@@ -30,7 +30,17 @@ export const gitExchangeApi = {
       },
     });
   },
-  
+
+  getNodePools: async (params: {
+    subscriptionName?: string;
+    resourceGroupName?: string;
+    clusterName?: string;
+  }) => {
+    return await axiosInstance.get('/gitProjectExchange/node-pools', {
+      params,
+    });
+  },
+
   getSubscriptions: async () => {
     return await axiosInstance.get('/gitProjectExchange/subscriptions');
   },

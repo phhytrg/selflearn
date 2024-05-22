@@ -1,5 +1,6 @@
-import { nodePoolApi } from "@/shared/apis/nodepool.api";
-import { useQuery } from "react-query";
+import { gitExchangeApi } from '@/shared/apis';
+import { nodePoolApi } from '@/shared/apis/nodepool.api';
+import { useQuery } from 'react-query';
 
 export interface NodePool {
   readonly id?: string;
@@ -22,16 +23,22 @@ export const useGetNodePools = (
   },
   isFetchFromDb?: boolean,
 ) => {
-  return useQuery<NodePool[], Error>([
-    'nodePools',
+  return useQuery<NodePool[], Error>(
+    [
+      'nodePools',
+      {
+        params,
+        isFetchFromDb,
+      },
+    ],
     {
-      params,
-      isFetchFromDb,
-    }
-  ],{
-    queryFn: async () => {
-      return (await nodePoolApi.getNodePools(params)).data;
+      queryFn: async () => {
+        if (isFetchFromDb) {
+          return (await nodePoolApi.getNodePools(params)).data;
+        }
+        return (await gitExchangeApi.getNodePools(params)).data;
+      },
+      refetchOnWindowFocus: false,
     },
-    refetchOnWindowFocus: false,
-  });
+  );
 };
