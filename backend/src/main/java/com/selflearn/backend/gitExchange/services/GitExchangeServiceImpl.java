@@ -12,11 +12,13 @@ import com.selflearn.backend.gitExchange.dtos.GitNodePool;
 import com.selflearn.backend.gitExchange.dtos.ContentResponse;
 import com.selflearn.backend.gitExchange.dtos.GitRepoTrees;
 import com.selflearn.backend.gitExchange.dtos.GitTreeNode;
+import com.selflearn.backend.gitExchange.dtos.WebHookRequest;
 import com.selflearn.backend.nodePool.NodePool;
 import com.selflearn.backend.resourceGroups.ResourceGroup;
 import com.selflearn.backend.subscriptions.Subscription;
 import com.selflearn.backend.subscriptions.services.SubscriptionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hc.client5.http.utils.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class GitExchangeServiceImpl implements GitExchangeService {
 
     private final SubscriptionService subscriptionService;
@@ -54,6 +57,8 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     private final ObjectMapper objectMapper;
 
     private final GitExchangeDao gitExchangeDao;
+
+    private final String branchRef = "refs/heads/observe";
 
     @Override
     public GitRepoTrees getRepoTrees() {
@@ -196,6 +201,20 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     }
 
     @Override
+    public void syncDatabaseViaWebhook(String request) {
+        try {
+            log.info("Get trigger by git webhook. Start syncing database");
+            Map<String, Object> req = objectMapper.readValue(request, Map.class);
+            if(req.get("ref").equals(branchRef)){
+                this.syncDatabaseWithGithub();
+            }
+            log.info("Successfully synced database");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<Subscription> syncDatabaseWithGithub() {
         this.subscriptionService.deleteAll();
 
@@ -243,7 +262,6 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                         .replaceAll("\n", "")
                         .replaceAll(" ", "");
                 // Fetch cluster content
-                ObjectMapper objectMapper = new ObjectMapper();
                 try {
                     List<Cluster> clusters = resourceGroup.getClusters();
                     List<NodePool> nodePools = Arrays.asList(objectMapper.readValue(content, NodePool[].class));

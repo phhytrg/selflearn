@@ -17,4 +17,5 @@ public interface GitExchangeService {
     List<String> getResourceGroups(String subscription);
     List<GitNodePool> getNodePools(String subscriptionName, String resourceGroupName, String clusterName);
     CreateCommitResponse syncGithubWithDatabase();
+    void syncDatabaseViaWebhook(String request);
 }
