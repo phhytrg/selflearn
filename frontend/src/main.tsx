@@ -13,8 +13,6 @@ import { ProjectTab } from './project/ProjectTab';
 import { TableTab } from './project/TableTab';
 import { LandingPage } from './landing/Landing';
 import { AdminPage } from './admin/Admin';
-import CreateNodePoolsForm from './admin/components/CreateNodePoolsForm';
-import DeleteForm from './admin/components/DeleteForm';
 
 const queryClient = new QueryClient();
 

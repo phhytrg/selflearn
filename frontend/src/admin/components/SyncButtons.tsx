@@ -10,6 +10,7 @@ export const SyncButtons = () => {
     setIsSyncingDatabase(true);
     try {
       await gitExchangeApi.syncDatabaseWithGithub();
+      alert('Synced database with github successfully');
     } catch (e) {
       alert('Failed to sync database with github');
     } finally {
@@ -21,6 +22,7 @@ export const SyncButtons = () => {
     setIsSyncingGithub(true);
     try {
       await gitExchangeApi.syncGithubWithDatabase();
+      alert('Synced github with database successfully');
     } catch (e) {
       alert('Failed to sync github with database');
     } finally {
