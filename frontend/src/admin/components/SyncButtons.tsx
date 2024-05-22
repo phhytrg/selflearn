@@ -1,5 +1,6 @@
 import { gitExchangeApi } from '@/shared/apis';
-import { Button, Col, Row, Spin } from 'antd';
+import { Button, Col, Modal, Row, Spin } from 'antd';
+import { title } from 'process';
 import { useState } from 'react';
 
 export const SyncButtons = () => {
@@ -10,9 +11,15 @@ export const SyncButtons = () => {
     setIsSyncingDatabase(true);
     try {
       await gitExchangeApi.syncDatabaseWithGithub();
-      alert('Synced database with github successfully');
-    } catch (e) {
-      alert('Failed to sync database with github');
+      Modal.info({
+        title: 'Info',
+        content: 'Synced database with github successfully',
+      });
+    } catch (e: any) {
+      Modal.error({
+        title: 'Error',
+        content: JSON.stringify(e.response.data),
+      });
     } finally {
       setIsSyncingDatabase(false);
     }
@@ -22,17 +29,23 @@ export const SyncButtons = () => {
     setIsSyncingGithub(true);
     try {
       await gitExchangeApi.syncGithubWithDatabase();
-      alert('Synced github with database successfully');
-    } catch (e) {
-      alert('Failed to sync github with database');
+      Modal.info({
+        title: 'Info',
+        content: 'Synced github with database successfully',
+      });
+    } catch (e: any) {
+      Modal.error({
+        title: 'Error',
+        content: JSON.stringify(e.response.data),
+      });
     } finally {
       setIsSyncingGithub(false);
     }
   };
 
   return (
-    <Col span={24} className='h-fit'>
-      <Row className='gap-2' justify={'center'}>
+    <Col span={24} className="h-fit">
+      <Row className="gap-2" justify={'center'}>
         <Button
           type="primary"
           onClick={handleSyncDatabaseWithGithub}

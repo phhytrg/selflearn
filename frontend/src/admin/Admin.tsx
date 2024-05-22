@@ -2,7 +2,6 @@ import { Col, Row, Tabs, TabsProps } from 'antd';
 import CreateNodePoolsForm from './components/CreateNodePoolsForm';
 import SyncButtons from './components/SyncButtons';
 import DeleteForm from './components/DeleteForm';
-import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 export const AdminPage = () => {
