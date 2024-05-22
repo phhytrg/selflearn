@@ -31,14 +31,19 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
     username: string;
     password: string;
   }) => {
-    const res: JwtResponse = (await authApi.login(username, password)).data;
+    let res: JwtResponse;
+    try {
+      res = (await authApi.login(username, password)).data;
+    } catch (e) {
+      return Promise.reject(e);
+    }
     const jwtPayload: JwtPayload = JSON.parse(
       Buffer.from(res.accessToken.split('.')[1], 'base64').toString(),
     );
     setUser(jwtPayload);
     localStorage.setItem('accessToken', res.accessToken);
     localStorage.setItem('refreshToken', res.refreshToken);
-  
+
     return Promise.resolve();
   };
 

@@ -6,6 +6,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,12 +62,13 @@ public class JwtUtils {
 
     public String getEmailFromToken(String token) throws BadCredentialsException {
         JwtParser parser = Jwts.parser().verifyWith(getSecretKey()).build();
-        try{
-
+        try {
             Map<String, ?> claims = parser.parseSignedClaims(token).getPayload();
             return (String) claims.get("email");
-        }catch (ExpiredJwtException e){
+        } catch (ExpiredJwtException e ) {
             throw new BadCredentialsException("Token expired");
+        } catch (SignatureException e ) {
+            throw new BadCredentialsException("Signature not match");
         }
     }
 

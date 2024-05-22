@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class GitNodePool {
+    private String id;
     private String name;
     private String provisioningState;
     private String powerState;

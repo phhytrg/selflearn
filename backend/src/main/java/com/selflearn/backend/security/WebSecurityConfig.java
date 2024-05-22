@@ -79,6 +79,7 @@ public class WebSecurityConfig {
                         .requestMatchers(apiPrefix + "/" + apiVersion + "/auth/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()
                         .requestMatchers( "/error/**").permitAll()
+                        .requestMatchers(apiPrefix+"/"+apiVersion+"/gitProjectExchange/webhook").permitAll()
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());

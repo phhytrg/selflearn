@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input } from 'antd';
+import { Button, Input, Modal } from 'antd';
 import { useAuth } from './hooks/useAuth';
+import { AxiosError } from 'axios';
 
 export const LoginPage = () => {
   const [username, setUsername] = useState('');
@@ -13,14 +14,19 @@ export const LoginPage = () => {
     if (user) {
       navigate('/', { replace: true });
     }
-  },[user, navigate]);
+  }, [user, navigate]);
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    await login({
-      username,
-      password,
-    });
+    try {
+      await login({
+        username,
+        password,
+      });
+    } catch (e: any) {
+      Modal.error({ title: 'Error', content: JSON.stringify(e.response.data) });
+      return;
+    }
     navigate('/', { replace: true });
   };
 
