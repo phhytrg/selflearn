@@ -15,7 +15,7 @@ public class SyncTask {
 
     private final GitExchangeService gitExchangeService;
 
-//    @Scheduled(fixedDelay = 10000)
+//    @Scheduled(fixedDelay = 30000)
 //    void syncDataToGithubEveryday() {
 //        // sync data to github
 //        this.gitExchangeService.syncGithubWithDatabase();

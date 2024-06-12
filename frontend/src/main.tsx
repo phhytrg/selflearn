@@ -13,6 +13,11 @@ import { ProjectTab } from './project/ProjectTab';
 import { TableTab } from './project/TableTab';
 import { LandingPage } from './landing/Landing';
 import { AdminPage } from './admin/Admin';
+import ReactPatternsPage from './react-patterns/ReactPatternsPage';
+import ClassCounter from './react-patterns/hooks-pattern/class-component';
+import FunctionCounter from './react-patterns/hooks-pattern/function-component';
+import HocPattern from './react-patterns/hoc-pattern';
+import RenderPropsPatternPage from './react-patterns/render-props-pattern';
 
 const queryClient = new QueryClient();
 
@@ -48,8 +53,8 @@ const router = createBrowserRouter([
           },
           {
             path: '/admin/delete',
-          }
-        ]
+          },
+        ],
       },
     ],
   },
@@ -60,6 +65,26 @@ const router = createBrowserRouter([
   {
     path: '/signup',
     element: <SignUpPage />,
+  },
+  {
+    path: '/react-patterns',
+    element: <ReactPatternsPage />,
+  },
+  {
+    path: '/react-patterns/hooks-pattern/class',
+    element: <ClassCounter />,
+  },
+  {
+    path: '/react-patterns/hooks-pattern/function',
+    element: <FunctionCounter />,
+  },
+  {
+    path: '/react-patterns/hoc-pattern',
+    element: <HocPattern />,
+  },
+  {
+    path: 'react-patterns/render-props-pattern',
+    element: <RenderPropsPatternPage />,
   },
 ]);
 

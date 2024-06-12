@@ -17,7 +17,8 @@ public class ResourceGroupServiceImpl implements ResourceGroupService {
     @Override
     public List<ResourceGroup> findAllBySubscriptionName(@Nullable String subscriptionName) {
         if (subscriptionName == null) {
-            return resourceGroupRepository.findAll();
+//            return resourceGroupRepository.findAll();
+            return List.of();
         }
         return resourceGroupRepository.findResourceGroupBySubscriptionName(subscriptionName);
     }

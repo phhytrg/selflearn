@@ -23,7 +23,7 @@ const CreateNodePoolsForm = () => {
 
   return (
     <>
-      <OptionsSelect {...params} />
+      <OptionsSelect key={"1"} {...params} />
       <Row className="mt-2" align={'middle'} justify={'center'}>
         <Col span={20}>
           <Dragger

@@ -18,13 +18,18 @@ public class ClusterServiceImpl implements ClusterService {
 
     @Override
     public List<Cluster> getClusters(@Nullable String subscriptionName, @Nullable String resourceName) {
-        if (resourceName != null) {
-            return clusterRepository.findClusterByResourceGroupName(resourceName);
+//        if (resourceName != null) {
+//            return clusterRepository.findClusterByResourceGroupName(resourceName);
+//        }
+//        if (subscriptionName != null) {
+//            return clusterRepository.findClusterBySubscriptionName(subscriptionName);
+//        }
+//
+//        return clusterRepository.findAll();
+        if (subscriptionName != null && resourceName != null) {
+            return clusterRepository.findClusterBySubscriptionNameAndResourceGroupName(subscriptionName, resourceName);
         }
-        if (subscriptionName != null) {
-            return clusterRepository.findClusterBySubscriptionName(subscriptionName);
-        }
-        return clusterRepository.findAll();
+        return List.of();
     }
 
     @Transactional

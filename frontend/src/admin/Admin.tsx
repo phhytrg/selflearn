@@ -3,8 +3,11 @@ import CreateNodePoolsForm from './components/CreateNodePoolsForm';
 import SyncButtons from './components/SyncButtons';
 import DeleteForm from './components/DeleteForm';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useRoles } from '@/shared/hooks/useAuthority';
+import { UserRole } from '@/shared/app.enum';
 
 export const AdminPage = () => {
+  const { isAdmin } = useRoles();
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -20,6 +23,11 @@ export const AdminPage = () => {
       children: <DeleteForm />,
     },
   ];
+
+  if (!isAdmin) {
+    return <h1>Unauthorized</h1>;
+  }
+
   return (
     <Row gutter={[16, 8]} align={'middle'} justify={'center'}>
       <SyncButtons />

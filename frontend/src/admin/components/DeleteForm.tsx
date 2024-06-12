@@ -10,7 +10,7 @@ const DeleteForm = () => {
 
   return (
     <div className="flex flex-col gap-2">
-      <OptionsSelect {...params} />
+      <OptionsSelect key={"2"} {...params} />
       <Row gutter={[0, 10]} justify={'end'}>
         <Button
           type="primary"

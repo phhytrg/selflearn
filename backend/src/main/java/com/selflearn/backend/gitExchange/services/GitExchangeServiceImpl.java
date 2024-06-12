@@ -12,7 +12,6 @@ import com.selflearn.backend.gitExchange.dtos.GitNodePool;
 import com.selflearn.backend.gitExchange.dtos.ContentResponse;
 import com.selflearn.backend.gitExchange.dtos.GitRepoTrees;
 import com.selflearn.backend.gitExchange.dtos.GitTreeNode;
-import com.selflearn.backend.gitExchange.dtos.WebHookRequest;
 import com.selflearn.backend.nodePool.NodePool;
 import com.selflearn.backend.resourceGroups.ResourceGroup;
 import com.selflearn.backend.subscriptions.Subscription;
@@ -23,8 +22,11 @@ import org.apache.hc.client5.http.utils.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,29 +74,40 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     @Override
     public List<String> getClusters(String subscriptionName, String resourceGroupName) {
-        if (resourceGroupName != null) {
+        if(resourceGroupName != null && subscriptionName != null){
             return this.getRepoTrees().getTree().stream()
                     .filter(gitTreeNode -> {
                         String[] parts = gitTreeNode.getPath().split("/");
-                        return parts.length == 3 && parts[1].equals(resourceGroupName);
+                        return parts.length == 3 && parts[1].equals(resourceGroupName) && parts[0].equals(subscriptionName);
                     }).map(gitContent -> {
                         String[] parts = gitContent.getPath().split("/");
                         return parts[parts.length - 1];
                     }).toList();
         }
-        if (subscriptionName != null) {
-            return this.getRepoTrees().getTree().stream()
-                    .filter(gitTreeNode -> {
-                        String[] parts = gitTreeNode.getPath().split("/");
-                        return parts.length == 3 && parts[0].equals(subscriptionName);
-                    }).map(gitContent -> {
-                        String[] parts = gitContent.getPath().split("/");
-                        return parts[parts.length - 1];
-                    }).toList();
-        }
-        return this.getRepoTrees().getTree().stream()
-                .filter(gitTreeNode -> gitTreeNode.getPath().split("/").length == 3)
-                .map(gitTreeNode -> gitTreeNode.getPath().split("/")[2]).toList();
+        return List.of();
+//        if (resourceGroupName != null) {
+//            return this.getRepoTrees().getTree().stream()
+//                    .filter(gitTreeNode -> {
+//                        String[] parts = gitTreeNode.getPath().split("/");
+//                        return parts.length == 3 && parts[1].equals(resourceGroupName);
+//                    }).map(gitContent -> {
+//                        String[] parts = gitContent.getPath().split("/");
+//                        return parts[parts.length - 1];
+//                    }).toList();
+//        }
+//        if (subscriptionName != null) {
+//            return this.getRepoTrees().getTree().stream()
+//                    .filter(gitTreeNode -> {
+//                        String[] parts = gitTreeNode.getPath().split("/");
+//                        return parts.length == 3 && parts[0].equals(subscriptionName);
+//                    }).map(gitContent -> {
+//                        String[] parts = gitContent.getPath().split("/");
+//                        return parts[parts.length - 1];
+//                    }).toList();
+//        }
+//        return this.getRepoTrees().getTree().stream()
+//                .filter(gitTreeNode -> gitTreeNode.getPath().split("/").length == 3)
+//                .map(gitTreeNode -> gitTreeNode.getPath().split("/")[2]).toList();
     }
 
 
@@ -132,8 +145,11 @@ public class GitExchangeServiceImpl implements GitExchangeService {
 
     @Override
     public CreateCommitResponse syncGithubWithDatabase() {
+        GitRepoTrees repoTreesDto = this.getRepoTrees();
         List<Subscription> subscriptions = subscriptionService.fetchAll();
         List<CreateTreeRequest.TreeNodeRequest> subscriptionNodes = new ArrayList<>();
+        String sampleSha = gitExchangeDao.getLatestSampleDirSha();
+        String latestSha = this.gitExchangeDao.getLatestSha();
         for (Subscription subscription : subscriptions) {
             List<CreateTreeRequest.TreeNodeRequest> resourceNodes = new ArrayList<>();
             for (ResourceGroup resourceGroup : subscription.getResourceGroups()) {
@@ -152,6 +168,20 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                             .sha(createCluster.getSha())
                             .build());
                 }
+                List<GitTreeNode> gitClusterNodes = this.findTreeNodeFromSubscriptionNameOrResourceGroupName(
+                        subscription.getName(),
+                        resourceGroup.getName(),
+                        repoTreesDto
+                );
+                clusterNodes.addAll(gitClusterNodes.stream().filter((tree) -> clusterNodes.stream().noneMatch(
+                        node -> node.getPath().equals(tree.getPath().split("/")[2])
+                )).map(i -> CreateTreeRequest.TreeNodeRequest.builder()
+                        .mode("100644")
+                        .path(i.getPath().split("/")[2])
+                        .type("blob")
+                        .sha(null)
+                        .build()).toList());
+
                 CreateTreeResponse resourceGroupTree = this.gitExchangeDao.createTree(
                         resourceGroup.getSha(),
                         clusterNodes
@@ -164,6 +194,21 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                         .sha(resourceGroupTree.getSha())
                         .build());
             }
+            List<GitTreeNode> gitResourceGroupsNodes = this.findTreeNodeFromSubscriptionNameOrResourceGroupName(
+                    subscription.getName(),
+                    null,
+                    repoTreesDto
+            );
+            resourceNodes.addAll(gitResourceGroupsNodes.stream().filter((tree) -> resourceNodes.stream().noneMatch(
+                            node -> node.getPath().equals(tree.getPath().split("/")[1])
+                    ))
+                    .map(i -> CreateTreeRequest.TreeNodeRequest.builder()
+                            .mode("040000")
+                            .path(i.getPath().split("/")[1])
+                            .type("tree")
+                            .sha(null)
+                            .build()).toList());
+
             CreateTreeResponse subscriptionTree = this.gitExchangeDao.createTree(
                     subscription.getSha(),
                     resourceNodes
@@ -176,12 +221,25 @@ public class GitExchangeServiceImpl implements GitExchangeService {
                     .build());
         }
 
+        List<GitTreeNode> gitSubscriptionNodes = this.findTreeNodeFromSubscriptionNameOrResourceGroupName(
+                null,
+                null,
+                repoTreesDto
+        );
+        subscriptionNodes.addAll(gitSubscriptionNodes.stream().filter(tree -> subscriptionNodes.stream().noneMatch(
+                node -> node.getPath().equals(tree.getPath().split("/")[0])
+                ))
+                .map(i -> CreateTreeRequest.TreeNodeRequest.builder()
+                        .mode("040000")
+                        .path(i.getPath().split("/")[0])
+                        .type("tree")
+                        .sha(null)
+                        .build())
+                .toList());
         CreateTreeResponse sampleTree = this.gitExchangeDao.createTree(
-                gitExchangeDao.getLatestSampleDirSha(),
+                sampleSha,
                 subscriptionNodes
         );
-
-        String latestSha = this.gitExchangeDao.getLatestSha();
         CreateTreeResponse createSampleDir = this.gitExchangeDao.createTree(
                 latestSha,
                 List.of(CreateTreeRequest.TreeNodeRequest.builder()
@@ -195,17 +253,18 @@ public class GitExchangeServiceImpl implements GitExchangeService {
         CreateCommitResponse response = this.gitExchangeDao.createCommit(
                 createSampleDir.getSha(),
                 latestSha,
-                "Sync data from database");
+                "Perform syncing at " + Instant.now());
 
         return this.gitExchangeDao.updateReference(response);
     }
+
 
     @Override
     public void syncDatabaseViaWebhook(String request) {
         try {
             log.info("Get trigger by git webhook. Start syncing database");
             Map<String, Object> req = objectMapper.readValue(request, Map.class);
-            if(req.get("ref").equals(branchRef)){
+            if (req.get("ref").equals(branchRef)) {
                 this.syncDatabaseWithGithub();
             }
             log.info("Successfully synced database");
@@ -296,9 +355,10 @@ public class GitExchangeServiceImpl implements GitExchangeService {
     public List<String> getResourceGroups(String subscription) {
 
         if (subscription == null) {
-            return this.getRepoTrees().getTree().stream()
-                    .filter(gitTreeNode -> gitTreeNode.getPath().split("/").length == 2)
-                    .map(gitTreeNode -> gitTreeNode.getPath().split("/")[1]).toList();
+            return List.of();
+//            return this.getRepoTrees().getTree().stream()
+//                    .filter(gitTreeNode -> gitTreeNode.getPath().split("/").length == 2)
+//                    .map(gitTreeNode -> gitTreeNode.getPath().split("/")[1]).toList();
         }
         // Not duplicate code, just optimize performance
         ContentResponse[] gitContents = this.gitExchangeDao.getContentsFromPath(baseDir + "/" + subscription);
@@ -328,5 +388,23 @@ public class GitExchangeServiceImpl implements GitExchangeService {
             }
         }
         return clusters;
+    }
+
+    private List<GitTreeNode> findTreeNodeFromSubscriptionNameOrResourceGroupName(
+            String subscriptionName,
+            String resourceGroupName,
+            GitRepoTrees gitRepoTrees) {
+        return gitRepoTrees.getTree().stream().filter(node -> {
+            String[] parts = node.getPath().split("/");
+            if (subscriptionName == null) {
+                return parts.length == 1;
+            } else {
+                if (resourceGroupName == null) {
+                    return parts.length == 2 && parts[0].equals(subscriptionName);
+                } else {
+                    return parts.length == 3 && parts[0].equals(subscriptionName) && parts[1].equals(resourceGroupName);
+                }
+            }
+        }).toList();
     }
 }

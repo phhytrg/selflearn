@@ -65,9 +65,9 @@ public class JwtUtils {
         try {
             Map<String, ?> claims = parser.parseSignedClaims(token).getPayload();
             return (String) claims.get("email");
-        } catch (ExpiredJwtException e ) {
+        } catch (ExpiredJwtException e) {
             throw new BadCredentialsException("Token expired");
-        } catch (SignatureException e ) {
+        } catch (SignatureException e) {
             throw new BadCredentialsException("Signature not match");
         }
     }

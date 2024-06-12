@@ -3,9 +3,12 @@ import { useAuth } from './hooks/useAuth';
 import { Button, Drawer } from 'antd';
 import { useState } from 'react';
 import { MenuOutlined } from '@ant-design/icons';
+import { useRoles } from '@/shared/hooks/useAuthority';
 
 export const ProtectedRoute = () => {
+  const { isAdmin } = useRoles();
   const [open, setOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   const showDrawer = () => {
     setOpen(true);
@@ -14,8 +17,6 @@ export const ProtectedRoute = () => {
   const onClose = () => {
     setOpen(false);
   };
-
-  const { user } = useAuth();
 
   if (!user) {
     //Try to get user from local storage
@@ -40,7 +41,8 @@ export const ProtectedRoute = () => {
         }}
       >
         <Link to={'/Home'}>Home</Link>
-        <Link to={'/Admin'}>Admin</Link>
+        {!isAdmin || <Link to={'/Admin'}>Admin</Link>}
+        <a onClick={logout}>Log out</a>
       </Drawer>
       <Outlet />
     </div>

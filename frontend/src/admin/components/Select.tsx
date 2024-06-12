@@ -4,6 +4,7 @@ import {
   useGetResources,
   useGetSubscriptions,
 } from '../queries/useOptions';
+import { useQueryClient } from 'react-query';
 
 const OptionsSelect = (params: {
   selectedSubscription: string;
@@ -13,12 +14,13 @@ const OptionsSelect = (params: {
   selectedCluster: string;
   setSelectedCluster: (value: string) => void;
 }) => {
-  const { data: subscriptions } = useGetSubscriptions();
-  const { data: resources } = useGetResources(params.selectedSubscription);
+  const { data: subscriptions, isLoading: isLoadingSubscriptions } = useGetSubscriptions();
+  const { data: resources, isLoading: isLoadingResourceGroups } = useGetResources(params.selectedSubscription);
   const { data: clusters, isLoading: isLoadingClusters } = useGetClusters(
     params.selectedSubscription,
     params.selectedResourceGroup,
   );
+  const queryClient = useQueryClient();
   return (
     <Row className="gap-2" justify={'center'}>
       <AutoComplete
@@ -29,6 +31,13 @@ const OptionsSelect = (params: {
         onChange={(value) => {
           params.setSelectedSubscription(value);
         }}
+        onClick={() => {
+          queryClient.invalidateQueries(['subscriptions']);
+        }}
+        allowClear
+        dropdownRender={(menu) => {
+          return isLoadingSubscriptions ? <Skeleton /> : menu;
+        }}
       />
       <AutoComplete
         popupMatchSelectWidth={200}
@@ -37,6 +46,12 @@ const OptionsSelect = (params: {
         placeholder={'Resource groups'}
         onChange={(value) => {
           params.setSelectedResourceGroup(value);
+        }}
+        onClick={() => {
+          queryClient.invalidateQueries(['resources']);
+        }}
+        dropdownRender={(menu) => {
+          return isLoadingResourceGroups ? <Skeleton /> : menu;
         }}
         allowClear
       />
@@ -48,8 +63,12 @@ const OptionsSelect = (params: {
         onChange={(value) => {
           params.setSelectedCluster(value);
         }}
+        allowClear
         dropdownRender={(menu) => {
           return isLoadingClusters ? <Skeleton /> : menu;
+        }}
+        onClick={() => {
+          queryClient.invalidateQueries(['clusters']);
         }}
       />
     </Row>

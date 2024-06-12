@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Input, Modal } from 'antd';
 import { useAuth } from './hooks/useAuth';
-import { AxiosError } from 'axios';
-
 export const LoginPage = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { login, user } = useAuth();
@@ -20,7 +18,7 @@ export const LoginPage = () => {
     e.preventDefault();
     try {
       await login({
-        username,
+        username: email,
         password,
       });
     } catch (e: any) {
@@ -33,12 +31,12 @@ export const LoginPage = () => {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <label htmlFor="username">Username:</label>
+        <label htmlFor="email">Email:</label>
         <Input
-          id="username"
+          id="email"
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div>
