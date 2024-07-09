@@ -18,18 +18,23 @@ export const ProtectedRoute = () => {
     setOpen(false);
   };
 
+  console.log(user);
+
   if (!user) {
     //Try to get user from local storage
     return <Navigate to="/login" />;
   }
+
   return (
     <div className="flex flex-col">
       <Button
         className="ml-auto"
+        aria-label="menu"
         icon={<MenuOutlined />}
         onClick={showDrawer}
       />
       <Drawer
+        data-testid="drawer"
         onClose={onClose}
         open={open}
         styles={{
