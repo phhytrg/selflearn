@@ -18,8 +18,6 @@ export const ProtectedRoute = () => {
     setOpen(false);
   };
 
-  console.log(user);
-
   if (!user) {
     //Try to get user from local storage
     return <Navigate to="/login" />;

@@ -12,7 +12,6 @@ import {
 import {
   cleanup,
   fireEvent,
-  prettyDOM,
   render,
   screen,
   waitFor,
@@ -32,7 +31,7 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
-import { authHandlers } from '../msw/mocks/auth.handlers';
+import { handlers as authHandlers } from '../msw/mocks/auth.handlers';
 import { server } from '../msw/worker';
 import routesConfig from '@/routes';
 
@@ -65,6 +64,9 @@ import routesConfig from '@/routes';
 //     },
 //   };
 // });
+
+server.use(...authHandlers);
+
 vi.mock('antd', async (importOriginal) => {
   const mod = await importOriginal<typeof import('antd')>();
   return {
@@ -83,7 +85,6 @@ const customRender = (ui: React.ReactNode, { providerProps }) => {
 };
 
 describe('SignIn Component', () => {
-  server.use(...authHandlers);
   let providerProps: MockedObject<AuthContextProps>;
 
   beforeAll(() => {
@@ -98,10 +99,6 @@ describe('SignIn Component', () => {
         },
       } as CSSStyleDeclaration;
     };
-  });
-
-  afterAll(() => {
-    // What to do after all tests
   });
 
   beforeEach(() => {
@@ -133,12 +130,15 @@ describe('SignIn Component', () => {
   });
 
   it('should match the snapshot', () => {
+    server.use(...authHandlers);
+    console.log(server.listHandlers());
     cleanup();
     const { asFragment } = customRender(<LoginPage />, { providerProps });
     expect(asFragment()).toMatchSnapshot();
   });
 
   it('should render the SignIn component', () => {
+    // console.log(server.listHandlers());
     // Sign in component should have email and password fields and a login button, a sign up button
     expect(screen.getByLabelText('Email:')).toBeInTheDocument();
     expect(screen.getByLabelText('Password:')).toBeInTheDocument();
@@ -257,6 +257,7 @@ describe('SignIn Component', () => {
         <RouterProvider router={router} />
       </AuthProvider>,
     );
+    
     const buttonElement = screen.getByRole('button', { name: 'signIn' });
     const passwordElem = screen.getByLabelText('password');
     const emailElem = screen.getByLabelText('email');
@@ -280,5 +281,10 @@ describe('SignIn Component', () => {
       'href',
       '/home',
     );
+  });
+
+  afterAll(() => {
+    console.log('msw handlers: ', server.listHandlers());
+    // server.resetHandlers();
   });
 });

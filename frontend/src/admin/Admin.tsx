@@ -4,7 +4,6 @@ import SyncButtons from './components/SyncButtons';
 import DeleteForm from './components/DeleteForm';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRoles } from '@/shared/hooks/useAuthority';
-import { UserRole } from '@/shared/app.enum';
 
 export const AdminPage = () => {
   const { isAdmin } = useRoles();

@@ -2,7 +2,8 @@ import { AuthProvider } from '@/auth/providers/AuthProvider';
 import routesConfig from '@/routes';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { describe, vi, beforeEach, afterEach, it, expect } from 'vitest';
+import { describe, vi, beforeEach, afterEach, it, expect, afterAll, beforeAll } from 'vitest';
+import { server } from '../msw/worker';
 
 describe('Routes with unauthorized user', () => {
   vi.mock(`@/auth/hooks/useAuth`, (importOriginal) => {
@@ -41,5 +42,12 @@ describe('Routes with unauthorized user', () => {
         }),
       ).toBeInTheDocument();
     });
+  });
+
+  beforeAll(() => {
+  });
+  
+  afterAll(() => {
+    console.log('msw handlers: ', server.listHandlers());
   });
 });

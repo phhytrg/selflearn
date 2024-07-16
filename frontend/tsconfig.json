@@ -29,7 +29,7 @@
       "@components/*": ["src/shared/components/*"],
       "@apis/*": ["src/shared/apis/*"]
     },
-    "types": ["node"]
+    "types": ["node"],
   },
   "include": ["src", "__test__"],
   "references": [{ "path": "./tsconfig.node.json" }]

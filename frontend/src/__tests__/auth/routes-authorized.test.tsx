@@ -5,9 +5,10 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import routesConfig from '@/routes';
 import { AuthProvider } from '@/auth/providers/AuthProvider';
+import { server } from '../msw/worker';
 
 describe('Routes with authorized user', () => {
   vi.mock('@/auth/hooks/useAuth', (importOriginal) => {
@@ -79,5 +80,9 @@ describe('Routes with authorized user', () => {
         '/home',
       );
     });
+  });
+
+  afterAll(() => {
+    console.log('msw handlers: ', server.listHandlers());
   });
 });

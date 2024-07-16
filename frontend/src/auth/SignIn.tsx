@@ -24,7 +24,6 @@ const LoginPage = () => {
         username: email,
         password,
       });
-      console.log(res);
     } catch (e: any) {
       Modal.error({
         title: 'Error',

@@ -9,6 +9,7 @@ import {
 } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import {
+  afterAll,
   afterEach,
   beforeAll,
   beforeEach,
@@ -18,35 +19,10 @@ import {
   vi,
 } from 'vitest';
 import { server } from '../msw/worker';
-import { authHandlers } from '../msw/mocks/auth.handlers';
-import { SignUpPage } from '@/auth/SignUp';
-import LoginPage from '@/auth/SignIn';
-import { ProtectedRoute } from '@/auth/ProtectedRoute';
-import { HomePage } from '@/home/Home';
-
-// const routesConfig = [
-//   {
-//     element: <SignUpPage />,
-//     path: '/signup',
-//   },
-//   {
-//     element: <LoginPage />,
-//     path: '/login',
-//   },
-//   {
-//     path: '/',
-//     element: <ProtectedRoute />,
-//     children: [
-//       {
-//         path: '/home',
-//         element: <HomePage />,
-//       },
-//     ],
-//   },
-// ];
+import { handlers as authHandlers } from '../msw/mocks/auth.handlers';
+import { faker } from '@faker-js/faker';
 
 describe('SignUp Component', () => {
-  server.use(...authHandlers);
   vi.mock('antd', async (importOriginal) => {
     const mod = await importOriginal<typeof import('antd')>();
     return {
@@ -58,6 +34,7 @@ describe('SignUp Component', () => {
   });
 
   beforeAll(() => {
+    server.use(...authHandlers);
   });
 
   beforeEach(() => {
@@ -116,7 +93,7 @@ describe('SignUp Component', () => {
     const confirmPasswordInput =
       screen.getByPlaceholderText('Confirm Password');
 
-    fireEvent.change(emailInput, { target: { value: 'test@gmail.com' } });
+    fireEvent.change(emailInput, { target: { value: faker.internet.email() } });
     fireEvent.change(passwordInput, { target: { value: 'password' } });
     fireEvent.change(confirmPasswordInput, { target: { value: 'password1' } });
     fireEvent.click(signUpButton);
@@ -124,5 +101,10 @@ describe('SignUp Component', () => {
     await waitFor(() => {
       expect(screen.getByTestId('error-modal')).toBeInTheDocument();
     });
+  });
+
+  afterAll(() => {
+    console.log('msw handlers: ', server.listHandlers());
+    // server.resetHandlers();
   });
 });

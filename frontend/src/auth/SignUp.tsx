@@ -23,7 +23,6 @@ export const SignUpPage = () => {
     setIsLoading(true);
     try {
       const res = await authApi.register(email, password, confirmPassword);
-      console.log(res);
     } catch (e: any) {
       Modal.error({
         title: 'Error',

@@ -8,7 +8,8 @@ import {
   render,
 } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { server } from '../msw/worker';
 
 describe('ProtectedRoute Component with authorized user', () => {
   vi.mock('@/auth/hooks/useAuth', (importOriginal) => {
@@ -64,5 +65,9 @@ describe('ProtectedRoute Component with authorized user', () => {
 
     const drawerElem = await screen.findByTestId('drawer');
     expect(drawerElem).toBeInTheDocument();
+  });
+
+  afterAll(() => {
+    console.log('msw handlers: ', server.listHandlers());
   });
 });
