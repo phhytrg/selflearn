@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+/// <reference types="vite/client" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import path from 'path';
@@ -18,6 +20,17 @@ export default defineConfig({
   css: {
     postcss: {
       plugins: [tailwindcss()],
+    },
+  },
+  test: {
+    environment: 'jsdom',
+    setupFiles: './src/__tests__/setupTests.ts',
+    globals: true,
+    reporters: ['html', 'default'],
+    coverage: {
+      reporter: ['text', 'html', 'json'],
+      enabled: true,
+      provider: 'istanbul',
     },
   },
 });

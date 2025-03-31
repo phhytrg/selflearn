@@ -1,38 +1,56 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Input } from 'antd';
+import { Button, Input, Modal, Spin } from 'antd';
 import { useAuth } from './hooks/useAuth';
 
-export const LoginPage = () => {
-  const [username, setUsername] = useState('');
+const LoginPage = () => {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const { login, user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
       navigate('/', { replace: true });
     }
-  },[user, navigate]);
+  }, [user, navigate]);
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
-    await login({
-      username,
-      password,
-    });
+    try {
+      setIsLoading(true);
+      const res = await login({
+        username: email,
+        password,
+      });
+    } catch (e: any) {
+      Modal.error({
+        title: 'Error',
+        content: (
+          <div data-testid="error-modal">
+            {JSON.stringify(e.response?.data) || e.message}
+          </div>
+        ),
+      });
+      return;
+    } finally {
+      setIsLoading(false);
+    }
     navigate('/', { replace: true });
   };
 
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <label htmlFor="username">Username:</label>
+        <label htmlFor="email">Email:</label>
         <Input
-          id="username"
+          id="email"
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          name="email"
+          aria-label="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div>
@@ -40,15 +58,25 @@ export const LoginPage = () => {
         <Input
           id="password"
           type="password"
+          name="password"
+          aria-label="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
-      <Button type="primary" onClick={handleLogin}>
-        Log In
+      <Button
+        type="primary"
+        onClick={handleLogin}
+        name="signIn"
+        aria-label="signIn"
+        disabled={isLoading}
+      >
+        {isLoading ? <Spin /> : `Log In`}
       </Button>
       <Button
         type="default"
+        name="signUp"
+        aria-label="signUp"
         onClick={() => {
           navigate('/signup', { replace: true });
         }}
@@ -58,3 +86,5 @@ export const LoginPage = () => {
     </div>
   );
 };
+
+export default LoginPage;

@@ -1,11 +1,11 @@
-import { createContext, ReactElement, useState, useMemo } from 'react';
+import { createContext, ReactElement, useMemo } from 'react';
 import { JwtResponse } from '../interfaces/Jwt';
 import { JwtPayload } from '../interfaces/JwtPayload';
-import { authApi } from '@/shared/apis/auth-api';
 import { Buffer } from 'buffer';
 import { useLocalStorage } from '@/shared/hooks/useLocalStorage';
+import { authApi } from '@/shared/apis';
 
-export const AuthContext = createContext<{
+export type AuthContextProps = {
   user: JwtPayload | null;
   login: ({
     username,
@@ -15,7 +15,9 @@ export const AuthContext = createContext<{
     password: string;
   }) => Promise<void>;
   logout: () => void;
-}>({
+};
+
+export const AuthContext = createContext<AuthContextProps>({
   user: null,
   login: async () => {}, // Fix: Change the return type to Promise<void>
   logout: () => {},
@@ -31,14 +33,15 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
     username: string;
     password: string;
   }) => {
-    const res: JwtResponse = (await authApi.login(username, password)).data;
+    const res: JwtResponse = (await authApi.login(username, password))?.data;
     const jwtPayload: JwtPayload = JSON.parse(
       Buffer.from(res.accessToken.split('.')[1], 'base64').toString(),
     );
     setUser(jwtPayload);
+
     localStorage.setItem('accessToken', res.accessToken);
     localStorage.setItem('refreshToken', res.refreshToken);
-  
+
     return Promise.resolve();
   };
 

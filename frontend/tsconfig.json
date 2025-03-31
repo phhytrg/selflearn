@@ -19,6 +19,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": false,
 
     "baseUrl": "./",
     "paths": {
@@ -28,8 +29,8 @@
       "@components/*": ["src/shared/components/*"],
       "@apis/*": ["src/shared/apis/*"]
     },
-    "types": ["node"]
+    "types": ["node"],
   },
-  "include": ["src"],
+  "include": ["src", "__test__"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
